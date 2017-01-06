@@ -1,6 +1,6 @@
 Texas Hold'em Poker
 Team Blazin' Texans
-Stephanie Yoon' Calvin Vuong, Giovanni Topa
+Stephanie Yoon, Calvin Vuong, Giovanni Topa
 
 
 We will be implementing a server that hosts a game of Texas Hold'em. Users can join the game if there is room (fewer than eight) and would have to wait if there aren’t at least two players. 
