@@ -1,0 +1,67 @@
+Texas Hold’em Poker
+Team Blazin’ Texans
+Stephanie Yoon, Calvin Vuong, Giovanni Topa
+
+
+We will be implementing a server that hosts a game of Texas Hold'em. Users can join the game if there is room (fewer than eight) and would have to wait if there aren’t at least two players. 
+
+User Experience / Interface:
+
+First the user will have to join the game. If another player joins it mid-game, he would have to wait until the next hand. If there is no space in the game, he would wait until there is space available.
+
+During a game, the user interface will display 7 things: the names of the players in the game and the amount of money they have, the amount of money currently in the pot, the highest bet, the amount of money you have bet, the river of cards on the table, the player's two cards, and the amount of money the player has left. The screen will also display options to check, call, raise, or fold. 
+
+Cards will be represented by their number/value (1-10, A, J, Q, K) and their suit (D, C, H, S). Example: the queen of hearts will be represented by QH.
+
+At the end of a game, the amount of money the last player has is reset and then they become the first player of the next game.
+
+Sample Interface
+
+Players:
+	Sauron: $500
+	Saruman: $250
+Grima (you): $50000	
+
+Pot: $750
+
+Highest bet: $200
+Your bet: $100
+
+River: 4C, KS, 5H
+Your Cards: 4H, 7D 
+
+Options:
+1. Call
+2. Raise
+3. Fold
+4. Check
+
+Technical Design:
+- Memory allocation: creating lists of cards
+- Networking: multiplayer functionality
+- Semaphores: turn handling, joining mid-game or waiting for players to join next game
+- Signals: catching kill/interrupt signals to distribute killed client's money to other players
+- Input/Output: using fgets to determine what the player wants to do next
+
+Tasks / Responsibilities:
+- Steph: algorithms to determine who wins a pot, shuffle deck
+- Calvin: Networking, creating/joining a game, turn mechanics
+- Gio: gameplay (betting, dealing cards)
+
+Data Structures:
+- The cards will be represented by structs containing an int for the value and a char for the suit.
+- Players will be represented by structs containing a *char for their name and an int for their money.
+- The deck will be represented as an array of 52 card structs.
+- The player's hand will be represented as an array of 2 card structs.
+
+Algorithms:
+- Sorting algorithms: used to make comparing hands easier
+- Algorithm to determine hand winner
+- Shuffling algorithm: to shuffle the deck
+
+Timeline:
+Day 1-3: Write algorithm to shuffle cards, write code for dealing cards, write code for creating different rooms
+Day 4-8: Write algorithm to sort cards, Write code to go through a hand w/ basic betting, start setting up networking stuff
+Day 8-13: Write code to decide who wins hand, Write code for betting, finish networking.
+
+
