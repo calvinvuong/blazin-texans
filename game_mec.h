@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 typedef struct card{
-  int num;
+  char * num;
   char suit;
 } card;
 
