@@ -1,0 +1,3 @@
+Blazin' Texans (Gio and some others)
+
+gioT -- 01/09/17 7:56 -- created game_mec.h, started work on creating the deck, created group of players
