@@ -10,6 +10,7 @@ client.c:
 	- solicits user input
 	- sends stuff to server
 	- displays info from server
+	- contains the player NUMBER
 algo.c:
 	- runs algorithms for sorting, shuffle, hand value
 game_mechanics.c:
@@ -35,4 +36,12 @@ game_mechanics.c
 *player round_winner( list of pointers to player structs figure out the type )
 * figure out the rest
 
+network.c
+--------------------------------------------------
+- send user option to server 
+- send bet amount to server
+- send new river to client
+- send hand to client
+- send new money amount to client
+- send error messages to client
 
