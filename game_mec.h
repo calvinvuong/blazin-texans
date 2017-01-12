@@ -11,7 +11,7 @@ typedef struct card{
 
 typedef struct player{
   struct card hand[2];
-  int bet;
+  int bet; // amt of money already bet this round
   int money;
   int score;
   int status; //-1 fold, 0 check, 1 still betting
@@ -43,3 +43,11 @@ int call(struct player);
 int check(struct player *players, int playerNum);
 
 int fold(struct player *play);
+
+// returns 0 if player playerNum has met the highest_bet requirement and can check
+// -1 otherwise (i.e. has to fold or call)
+int can_check(struct player *players, int playerNum, int highest_bet);
+
+int all_folded(struct player *players, int num_players);
+
+int all_checked(struct player *players, int num_players);

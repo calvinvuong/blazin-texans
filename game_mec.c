@@ -1,6 +1,7 @@
 #include "game_mec.h"
 #include <string.h>
 
+
 int makeDeck(struct card * deck){
   char suits[4]={'D','C', 'H', 'S'};
   char * nums[13]={"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
@@ -91,7 +92,7 @@ int bet(int amount, struct player *players, int playerNum){
 
 int check(struct player *players, int playerNum){
   int i;
-  for(int i=0;i<playerNum;i++){
+  for( i=0;i<playerNum;i++){
     if(players[i].status==1){
       return -1;
     }
@@ -102,6 +103,38 @@ int check(struct player *players, int playerNum){
 
 int fold(struct player *players, int playerNum){
   players[playerNum].status=-1;
+  return 0;
+}
+
+// returns 0 if player playerNum has met the highest_bet requirement and can check
+// -1 otherwise (i.e. has to fold or call)
+// use this function in determining which options the player can choose from
+int can_check(struct player *players, int playerNum, int highest_bet) {
+  if ( players[playerNum].bet == highest_bet )
+    return 0;
+  
+  return -1;
+}
+
+// returns 0 if all players have folded
+// -1 otherwise
+int all_folded(struct player *players, int num_players) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    if ( players[i].status != -1 )
+      return -1;
+  }
+  return 0;
+}
+
+// returns 0 if all players have checked or folded
+// -1 if not all players have checked
+int all_checked(struct player *players, int num_players) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    if ( players[i].status != 0 )
+      return -1;
+  }
   return 0;
 }
 
@@ -130,6 +163,6 @@ int main(){
   }
 
   printDeck(deck, 52);
-  free(deck);
+  deck = free(deck);
   return 0;
 }
