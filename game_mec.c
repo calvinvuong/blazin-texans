@@ -80,23 +80,18 @@ struct card remove_card(struct card * deck) {
   return tmp_card;
 }
 
-int bet(int amount, struct player *players, int playerNum){
-  if(amount>players[playerNum].money){
+int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum){
+  if(amount_to_bet > players[playerNum].money || amount_to_bet <= *highest_bet){
     return -1;
   }else{
-    players[playerNum].bet+=amount;
-    players[playerNum].money-=amount;
+    players[playerNum].bet+=amount_to_bet;
+    players[playerNum].money-=amount_to_bet;
+    *highest_bet += amount_to_bet
     return 0;
   }
 }
 
 int check(struct player *players, int playerNum){
-  int i;
-  for( i=0;i<playerNum;i++){
-    if(players[i].status==1){
-      return -1;
-    }
-  }
   players[playerNum].status=0;
   return 0;
 }
