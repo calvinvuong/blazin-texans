@@ -101,6 +101,17 @@ int fold(struct player *players, int playerNum){
   return 0;
 }
 
+int call(struct player * players, int playerNum, int highest_bet){
+  int amount_to_bet=highest_bet-players[playerNum].bet; 
+  if(amount_to_bet>players[playerNum].money){
+    return -1;
+  }
+
+  players[playerNum].bet=highest_bet;
+  players[playerNum].money-=amount_to_bet;
+  return 0;
+}
+
 // returns 0 if player playerNum has met the highest_bet requirement and can check
 // -1 otherwise (i.e. has to fold or call)
 // use this function in determining which options the player can choose from

@@ -24,6 +24,8 @@ struct player * players;
 // cards removed from the deck are marked with num "N"
 struct card * deck;
 
+struct card * river;
+
 int makeDeck(struct card * deck);
 
 void printDeck(struct card * deck, int size);
@@ -36,13 +38,13 @@ int top_card_pos(struct card *deck);
 
 struct card remove_card(struct card *deck);
 
-int bet(int amount, struct player *players, int playerNum);
+int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum);
 
-int call(struct player);
+int call(struct player * players, int playerNum, int highest_bet);
 
 int check(struct player *players, int playerNum);
 
-int fold(struct player *play);
+int fold(struct player *players, int playerNum);
 
 // returns 0 if player playerNum has met the highest_bet requirement and can check
 // -1 otherwise (i.e. has to fold or call)
