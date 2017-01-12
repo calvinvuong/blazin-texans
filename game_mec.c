@@ -78,7 +78,33 @@ struct card remove_card(struct card * deck) {
 
   return tmp_card;
 }
-  
+
+int bet(int amount, struct player *players, int playerNum){
+  if(amount>players[playerNum].money){
+    return -1;
+  }else{
+    players[playerNum].bet+=amount;
+    players[playerNum].money-=amount;
+    return 0;
+  }
+}
+
+int check(struct player *players, int playerNum){
+  int i;
+  for(int i=0;i<playerNum;i++){
+    if(players[i].status==1){
+      return -1;
+    }
+  }
+  players[playerNum].status=0;
+  return 0;
+}
+
+int fold(struct player *players, int playerNum){
+  players[playerNum].status=-1;
+  return 0;
+}
+
 int main(){
   players=(player *) malloc(sizeof(struct player)*4);
   deck=(card *) malloc(sizeof(struct card)*53);

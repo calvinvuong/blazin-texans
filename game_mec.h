@@ -14,7 +14,7 @@ typedef struct player{
   int bet;
   int money;
   int score;
-  int playerNumber;
+  int status; //-1 fold, 0 check, 1 still betting
   //socket or whatever
   //IP thingy
 } player;
@@ -36,10 +36,10 @@ int top_card_pos(struct card *deck);
 
 struct card remove_card(struct card *deck);
 
-int bet(int amount, struct player);
+int bet(int amount, struct player *players, int playerNum);
 
 int call(struct player);
 
-int check(struct player);
+int check(struct player *players, int playerNum);
 
-int fold(struct player);
+int fold(struct player *play);
