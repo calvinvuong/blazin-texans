@@ -3,6 +3,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <string.h>
+
+#ifndef GAME_MEC_H
+#define GAME_MEC_H
 
 typedef struct card{
   char num[3];
@@ -53,3 +57,5 @@ int can_check(struct player *players, int playerNum, int highest_bet);
 int all_folded(struct player *players, int num_players);
 
 int all_checked(struct player *players, int num_players);
+
+#endif

@@ -1,6 +1,4 @@
 #include "game_mec.h"
-#include <string.h>
-
 
 int makeDeck(struct card * deck){
   char suits[4]={'D','C', 'H', 'S'};
@@ -86,7 +84,7 @@ int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerN
   }else{
     players[playerNum].bet+=amount_to_bet;
     players[playerNum].money-=amount_to_bet;
-    *highest_bet += amount_to_bet
+    *highest_bet += amount_to_bet;
     return 0;
   }
 }
@@ -169,6 +167,6 @@ int main(){
   }
 
   printDeck(deck, 52);
-  deck = free(deck);
+  free(deck);
   return 0;
 }
