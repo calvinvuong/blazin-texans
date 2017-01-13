@@ -90,6 +90,9 @@ int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerN
 }
 
 int check(struct player *players, int playerNum){
+  if(playerNum-1<0 && players[playerNum-1].status==1){
+    return -1;
+  }
   players[playerNum].status=0;
   return 0;
 }
@@ -143,9 +146,15 @@ int all_checked(struct player *players, int num_players) {
 }
 
 int main(){
-  players=(player *) malloc(sizeof(struct player)*4);
+  players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
 
+  int j;
+  for(j=0;j<4;j++){
+    players[j].money=1000;
+    players[j].status=1;
+  }
+  int highest_bet=0;
   /*
   players[0].bet=0;
   players[1].bet=0;
@@ -167,6 +176,22 @@ int main(){
   }
 
   printDeck(deck, 52);
+
+  printf("\n\n %d\n",check(players, 0));
+  printf("\n %d \n", bet(100,&highest_bet,players,1));
+  printf("\n %d \n", bet(1100,&highest_bet,players,2));
+  printf("\n %d \n", bet(10,&highest_bet,players,2));
+  printf("\n\n %d\n",check(players, 2));
+  printf("\n\n %d\n",call(players, 2, highest_bet));
+  
+  printf("\n highest_bet: %d\n", highest_bet);
+  
+  for(j=0;j<4;j++){
+    printf("\n\nplayer %d's bets %d \n", j, players[j].bet);
+    printf("\n\nplayer %d's money %d \n", j, players[j].money);
+    printf("\n\nplayer %d's status %d \n", j, players[j].status);
+  }
+  free(players);
   free(deck);
   return 0;
 }
