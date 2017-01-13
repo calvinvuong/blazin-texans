@@ -8,4 +8,8 @@ gioT -- 01/10/17 18:45 -- finished writing makeDeck
 
 cVuong -- 01/10/17 20:54 -- wrote deal cards function; wrote some printing functions; tested and robustified some previous code
 
+gioT -- 01/11/17 19:15 -- wrote fold, check, call, bet
+
 cVuong -- 01/12/17 12:20 -- wrote some auxilliary game mechanic functions like all_folded() or can_check() etc. 
+
+gioT -- 01/13/17 6:48 -- tested bet, call, fold, check
