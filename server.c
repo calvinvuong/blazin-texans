@@ -96,12 +96,12 @@ int main() {
   
   while (1) {
 
-    if ( ! (queue_size > 1) || game_running == 1 )
-      listener(sd, ip_queue, &queue_size);
-
     printf("game_pid: %d\n", game_pid);
     game_running = update_game_status(game_pid);
     printf("game_running: %d\n", game_running);
+
+    if ( ! (queue_size > 1) || game_running == 1 )
+      listener(sd, ip_queue, &queue_size);
 
     if ( queue_size > 1 && game_running == 0 ) { // ready to start game
       unsigned int player_IPs[4];
