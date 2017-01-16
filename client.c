@@ -9,17 +9,17 @@ int main() {
   sd = client_connect(host, 1379);
 
   char buffer[500];
+  //  int i = 0;
+  //while ( 1 ) {
+
+  write( sd, "client to listener", sizeof("client to listener")  );
   
-  while (1) {
-
-    write( sd, "client to listener", sizeof("client to listener")  );
-
-    read(sd, &buffer, sizeof(buffer));
-    
-    close(sd);
-
-    printf("%s\n", buffer);
-  }    
+  read(sd, &buffer, sizeof(buffer));
+  
+  close(sd);
+  
+  printf("%s\n", buffer);
+    //}    
 
   return 0;
 }
