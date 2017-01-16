@@ -58,6 +58,7 @@ int transfer_IPs( unsigned int *ip_queue, int *queue_size, unsigned int *player_
 
 // runs the game; takes an arrat of length 4 storing ip addresses
 int game(unsigned int player_IPs[], int num_players){
+  
   printf("Game players:\n");
   while (1) {
     int i = 0;
@@ -89,11 +90,13 @@ int main() {
       else if ( queue_size >= 2 )
 	num_players = transfer_IPs(ip_queue, &queue_size, player_IPs, queue_size);
 
-      // start_game();
       if ( game_running == 0 ) { // no game running
+	game_running = 1;
 	int f = fork();
-	if ( f == 0 ) // child process
+	if ( f == 0 ) { // child process
 	  game(player_IPs, num_players); // start game
+	  game_running = 0;
+	}
       }
 
     }
