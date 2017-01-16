@@ -22,7 +22,7 @@ int main() {
   
   while (1) {
     connection = server_connect(sd, &(ip_queue[queue_size]));
-    // read from connection to get client ip and port
+    
     unsigned int buffer;
     read( connection, &buffer, sizeof(buffer) );
     //ip_queue[queue_size] = buffer;
