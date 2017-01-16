@@ -1,5 +1,5 @@
 #include "game_mec.h"
-#include "networking.h"
+#include "networking.c"
 
 int main() {
 
@@ -12,13 +12,13 @@ int main() {
   
   while (1) {
     unsigned int ip;
-    ip = inet_aton("149.89.150.104");
-    
-    write( sd, ip, sizeof(ip) );
+    //ip = inet_aton("149.89.150.104");
+    ip = 1023;
+    write( sd, &ip, sizeof(ip) );
 
-    read(sd, buffer, sizeof(buffer));
+    read(sd, &buffer, sizeof(buffer));
     
-    close(connection);
+    close(sd);
 
     printf("%s\n", buffer);
   }    

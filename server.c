@@ -1,11 +1,12 @@
 #include "game_mec.h"
-#include "networking.h"
+#include "networking.c"
 
 void print_IP( unsigned int queue[], int size ) {
   printf("IP Queue: ");
   int i;
   for ( i = 0; i < size; i++ ) {
-    printf("%d, " inet_ntoa(queue[i]));
+    //printf("%s ", inet_ntoa(queue[i]));
+    printf("%d, ", queue[i]);
   }
   printf("\n");
 }
@@ -23,14 +24,15 @@ int main() {
     connection = server_connect(sd);
     // read from connection to get client ip and port
     unsigned int buffer;
-    read( connection, buffer, sizeof(buffer) );
-    ip_queue[size] = buffer;
-    size++;
+    read( connection, &buffer, sizeof(buffer) );
+    ip_queue[queue_size] = buffer;
+    queue_size++;
     
     write( connection, "received", sizeof("received") );
     close(connection);
 
     print_IP(ip_queue, queue_size);
+   
   }    
 
   return 0;
