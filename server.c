@@ -95,7 +95,9 @@ int main() {
   sd = server_setup(1379);
   
   while (1) {
-    listener(sd, ip_queue, &queue_size);
+
+    if ( ! (queue_size > 1) || game_running == 1 )
+      listener(sd, ip_queue, &queue_size);
 
     printf("game_pid: %d\n", game_pid);
     game_running = update_game_status(game_pid);
