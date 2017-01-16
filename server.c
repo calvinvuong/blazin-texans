@@ -21,11 +21,11 @@ int main() {
   sd = server_setup();
   
   while (1) {
-    connection = server_connect(sd);
+    connection = server_connect(sd, &(ip_queue[queue_size]));
     // read from connection to get client ip and port
     unsigned int buffer;
     read( connection, &buffer, sizeof(buffer) );
-    ip_queue[queue_size] = buffer;
+    //ip_queue[queue_size] = buffer;
     queue_size++;
     
     write( connection, "received", sizeof("received") );

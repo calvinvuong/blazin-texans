@@ -35,7 +35,7 @@ int server_setup() {
   return sd;
 }
 
-int server_connect(int sd) {
+int server_connect(int sd, unsigned int *ip) {
   int connection, i;
 
   i = listen(sd, 1);
@@ -47,6 +47,7 @@ int server_connect(int sd) {
   error_check( connection, "server accept" );
   
   printf("[server] connected to %s\n", inet_ntoa( sock1.sin_addr ) );
+  *ip = sock1.sin_addr.s_addr;
   
   return connection;
 }
