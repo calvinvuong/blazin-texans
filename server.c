@@ -56,6 +56,15 @@ int transfer_IPs( unsigned int *ip_queue, int *queue_size, unsigned int *player_
   return num_players;
 }
 
+// returns 0 if the game of given pid is not running
+// returns 1 if the game of given pid is running
+int update_game_status(int pid) {
+  if ( kill(pid, 0) == 0 ) // doesn't actually kill
+    return 1;
+  else
+    return 0;
+}
+
 // runs the game; takes an arrat of length 4 storing ip addresses
 int game(unsigned int player_IPs[], int num_players){
   
@@ -71,6 +80,7 @@ int game(unsigned int player_IPs[], int num_players){
     sleep(2);
     k++;
   }
+  return 0;
 }
   
 
@@ -80,12 +90,15 @@ int main() {
   unsigned int ip_queue[20];
   int queue_size = 0;
   int game_running = 0; // 0 if no game running; 1 if there is
+  int game_pid;
   
   sd = server_setup(1379);
   
   while (1) {
     listener(sd, ip_queue, &queue_size);
-    if ( queue_size > 1 ) { // ready to start game
+    game_running = update_game_status(game_pid);
+    
+    if ( queue_size > 1 && game_running == 0 ) { // ready to start game
       unsigned int player_IPs[4];
       int num_players;
       if ( queue_size > 4 )
@@ -96,10 +109,10 @@ int main() {
       if ( game_running == 0 ) { // no game running
 	game_running = 1;
 	int f = fork();
-	if ( f == 0 ) { // child process
+	if ( f == 0 )  // child process
 	  game(player_IPs, num_players); // start game
-	  game_running = 0;
-	}
+	else
+	  game_pid = f; // store pid of the game / child process
       }
 
     }
