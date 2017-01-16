@@ -5,9 +5,9 @@
 
 void error_check( int i, char *s );
 
-int server_setup();
+int server_setup(int port);
 int server_connect(int sd);
 
-int client_connect( char *host );
+int client_connect( char *host, in port );
 
 #endif

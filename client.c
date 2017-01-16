@@ -6,15 +6,13 @@ int main() {
   char *host = "149.89.150.103";
   int sd;
 
-  sd = client_connect(host);
+  sd = client_connect(host, 1379);
 
   char buffer[500];
   
   while (1) {
-    unsigned int ip;
-    //ip = inet_aton("149.89.150.104");
-    ip = 1023;
-    write( sd, &ip, sizeof(ip) );
+
+    write( sd, "client to listener", sizeof("client to listener")  );
 
     read(sd, &buffer, sizeof(buffer));
     

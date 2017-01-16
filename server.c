@@ -1,6 +1,11 @@
 #include "game_mec.h"
 #include "networking.c"
 
+/*STANDARDS:
+use port 1379 for the initial connection to the listener
+use port 3019 for the connection between game and client
+*/
+
 void print_IP( unsigned int queue[], int size ) {
   printf("IP Queue: ");
   int i;
@@ -17,18 +22,17 @@ int main() {
   int sd, connection;
   unsigned int ip_queue[20];
   int queue_size = 0;
-
-  sd = server_setup();
+  
+  sd = server_setup(1379);
   
   while (1) {
-    connection = server_connect(sd, &(ip_queue[queue_size]));
-    
-    unsigned int buffer;
-    read( connection, &buffer, sizeof(buffer) );
-    //ip_queue[queue_size] = buffer;
+    connection = initial_server_connect(sd, &(ip_queue[queue_size]));
     queue_size++;
     
-    write( connection, "received", sizeof("received") );
+    char buffer[500];
+    read( connection, &buffer, sizeof(buffer) );
+    if ( strcmp(buffer, "client to listener") == 0 )
+      write( connection, "received client to listener; please standby", sizeof("received client to listener; please standby") );
     close(connection);
 
     print_IP(ip_queue, queue_size);
