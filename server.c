@@ -75,6 +75,7 @@ int main() {
   int sd, connection;
   unsigned int ip_queue[20];
   int queue_size = 0;
+  int game_running; // 0 if no game running; 1 if there is
   
   sd = server_setup(1379);
   
@@ -87,8 +88,14 @@ int main() {
 	num_players = transfer_IPs(ip_queue, &queue_size, player_IPs, 4);
       else if ( queue_size >= 2 )
 	num_players = transfer_IPs(ip_queue, &queue_size, player_IPs, queue_size);
+
       // start_game();
-      game(player_IPs, num_players); 
+      if ( game_running == 0 ) { // no game running
+	int f = fork();
+	if ( f == 0 ) // child process
+	  game(player_IPs, num_players); // start game
+      }
+
     }
     // if only 1 player connected, pass
     
