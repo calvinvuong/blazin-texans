@@ -60,13 +60,16 @@ int transfer_IPs( unsigned int *ip_queue, int *queue_size, unsigned int *player_
 int game(unsigned int player_IPs[], int num_players){
   
   printf("Game players:\n");
-  while (1) {
+  //  while (1) {
+  int k = 0;
+  while ( k < 10 ) {
     int i = 0;
     for ( i = 0; i < num_players; i++ ) {
       printf("Player %d: %d", i, player_IPs[i]);
     }
     printf("\n");
     sleep(2);
+    k++;
   }
 }
   
@@ -76,7 +79,7 @@ int main() {
   int sd, connection;
   unsigned int ip_queue[20];
   int queue_size = 0;
-  int game_running; // 0 if no game running; 1 if there is
+  int game_running = 0; // 0 if no game running; 1 if there is
   
   sd = server_setup(1379);
   
