@@ -16,6 +16,21 @@ void print_IP( unsigned int queue[], int size ) {
   printf("\n");
 }
 
+// actively listens for new connections and adds their ip to ip_queue
+int listener( int sd, unsigned int *ip_queue, int *queue_size ) {
+  int connection;
+  connection = initial_server_connect(sd, &(ip_queue[*queue_size]));
+  queue_size++;
+  
+  char buffer[500];
+  read( connection, &buffer, sizeof(buffer) );
+  if ( strcmp(buffer, "client to listener") == 0 )
+    write( connection, "received client to listener; please standby", sizeof("received client to listener; please standby") );
+  close(connection);
+  
+  print_IP(ip_queue, *queue_size);
+  return 0;
+}
 
 int main() {
   
@@ -26,6 +41,9 @@ int main() {
   sd = server_setup(1379);
   
   while (1) {
+    listener(sd, ip_queue, &queue_size);
+    
+    /*
     connection = initial_server_connect(sd, &(ip_queue[queue_size]));
     queue_size++;
     
@@ -35,8 +53,9 @@ int main() {
       write( connection, "received client to listener; please standby", sizeof("received client to listener; please standby") );
     close(connection);
 
+    
     print_IP(ip_queue, queue_size);
-   
+    */
   }    
 
   return 0;
