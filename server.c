@@ -26,9 +26,10 @@ int listener( int sd, unsigned int *ip_queue, int *queue_size ) {
   if ( strcmp(buffer, "client to listener") == 0 )
     write( connection, "received client to listener; please standby", sizeof("received client to listener; please standby") );
   close(connection);
-  
-  print_IP(ip_queue, *queue_size);
+
   (*queue_size)++;
+  print_IP(ip_queue, *queue_size);
+
   return 0;
 }
 
