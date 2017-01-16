@@ -20,7 +20,6 @@ void print_IP( unsigned int queue[], int size ) {
 int listener( int sd, unsigned int *ip_queue, int *queue_size ) {
   int connection;
   connection = initial_server_connect(sd, &(ip_queue[*queue_size]));
-  queue_size++;
   
   char buffer[500];
   read( connection, &buffer, sizeof(buffer) );
@@ -29,6 +28,7 @@ int listener( int sd, unsigned int *ip_queue, int *queue_size ) {
   close(connection);
   
   print_IP(ip_queue, *queue_size);
+  (*queue_size)++;
   return 0;
 }
 
