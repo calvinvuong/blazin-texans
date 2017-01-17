@@ -164,7 +164,18 @@ int all_checked(struct player *players, int num_players) {
   return 0;
 }
 
+int all_ready(struct player * players, int highest_bet, int num_players){
+  int i;
+  for(i=0;i<num_players;i++){
+    if((players[i].status==0&&players[i].bet-highest_bet)||(players[i].status==1&&players[i].bet-highest_bet)){
+      return 1;
+    }
+  }
+  return 0;
+}
+
 /*
+
 int betting(struct player * players, int * highest_bet){
   int i;
   int done;
@@ -197,7 +208,7 @@ int betting(struct player * players, int * highest_bet){
       }
     }
   }
-  allReady(players, &ready);
+  ready=allReady(players, *highest_bet);
 }
 
 put int server:

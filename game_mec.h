@@ -59,4 +59,7 @@ int all_folded(struct player *players, int num_players);
 
 int all_checked(struct player *players, int num_players);
 
+int betting(struct player * players, int * highest_bet, int num_players);
+
+int all_ready(struct player * players, int highest_bet, int num_players);
 #endif
