@@ -1,5 +1,24 @@
 #include "game_mec.h"
 
+/* FOR REFERENCE ONLY
+
+typedef struct card{
+  char num[3];
+  char suit;
+} card;
+
+typedef struct player{
+  struct card hand[2];
+  int player_num; 
+  int bet; // amt of money already bet this round
+  int money;
+  int score;
+  int status; //-1 fold, 0 check, 1 still betting
+  unsigned int ip_address;
+  int socket_connection;
+} player;
+*/
+
 int makeDeck(struct card * deck){
   char suits[4]={'D','C', 'H', 'S'};
   char * nums[13]={"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
@@ -145,6 +164,7 @@ int all_checked(struct player *players, int num_players) {
   return 0;
 }
 
+/*
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
@@ -155,13 +175,12 @@ int main(){
     players[j].status=1;
   }
   int highest_bet=0;
-  /*
+
   players[0].bet=0;
   players[1].bet=0;
   printf("%d\n",players[0].bet);
   printf("%d\n",players[1].bet);
   deal(players);
-  */
   
   makeDeck(deck);
   printDeck(deck, 52);
@@ -195,3 +214,4 @@ int main(){
   free(deck);
   return 0;
 }
+*/

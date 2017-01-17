@@ -15,12 +15,13 @@ typedef struct card{
 
 typedef struct player{
   struct card hand[2];
+  int player_num; 
   int bet; // amt of money already bet this round
   int money;
   int score;
   int status; //-1 fold, 0 check, 1 still betting
-  //socket or whatever
-  //IP thingy
+  unsigned int ip_address;
+  int socket_connection;
 } player;
 
 struct player * players;

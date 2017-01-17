@@ -1,5 +1,6 @@
-#include "game_mec.h"
+#incAOAlude "game_mec.c"
 #include "networking.c"
+#include "server.h"
 
 /*STANDARDS:
 use port 1379 for the initial connection to the listener
@@ -71,6 +72,16 @@ int update_game_status(int pid) {
     return 0;
 }
 
+// populates an array of players using player_IPs
+// takes an array of 4 player structs
+// takes an array of 4 ip addresses
+// MOVE THIS TO GAME MECHANICS
+int make_players(struct player players[], unsigned int player_IPs[], int num_players) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    
+}
+
 // runs the game; takes an arrat of length 4 storing ip addresses
 int game(unsigned int player_IPs[], int num_players){
   
@@ -138,3 +149,56 @@ int main() {
 
   return 0;
 }
+
+
+/* DIAGNOSTIC RUNNING STUFF
+int main(){
+  players=(player *) calloc(4,sizeof(struct player));
+  deck=(card *) malloc(sizeof(struct card)*53);
+
+  int j;
+  for(j=0;j<4;j++){
+    players[j].money=1000;
+    players[j].status=1;
+  }
+  int highest_bet=0;
+
+  players[0].bet=0;
+  players[1].bet=0;
+  printf("%d\n",players[0].bet);
+  printf("%d\n",players[1].bet);
+  deal(players);
+  
+  makeDeck(deck);
+  printDeck(deck, 52);
+  printf("\n");
+
+  deal(players, 4, deck, 2);
+
+  int i;
+  for ( i = 0; i < 4; i++ ) {
+    printDeck(players[i].hand, 2);
+    printf("\n");
+  }
+
+  printDeck(deck, 52);
+
+  printf("\n\n %d\n",check(players, 0));
+  printf("\n %d \n", bet(100,&highest_bet,players,1));
+  printf("\n %d \n", bet(1100,&highest_bet,players,2));
+  printf("\n %d \n", bet(10,&highest_bet,players,2));
+  printf("\n\n %d\n",check(players, 2));
+  printf("\n\n %d\n",call(players, 2, highest_bet));
+  
+  printf("\n highest_bet: %d\n", highest_bet);
+  
+  for(j=0;j<4;j++){
+    printf("\n\nplayer %d's bets %d \n", j, players[j].bet);
+    printf("\n\nplayer %d's money %d \n", j, players[j].money);
+    printf("\n\nplayer %d's status %d \n", j, players[j].status);
+  }
+  free(players);
+  free(deck);
+  return 0;
+}
+*/
