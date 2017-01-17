@@ -13,3 +13,5 @@ gioT -- 01/11/17 19:15 -- wrote fold, check, call, bet
 cVuong -- 01/12/17 12:20 -- wrote some auxilliary game mechanic functions like all_folded() or can_check() etc. 
 
 gioT -- 01/13/17 6:48 -- tested bet, call, fold, check
+
+gioT -- 01/17/17 15:30 -- wrote betting and all_ready, still have to test
