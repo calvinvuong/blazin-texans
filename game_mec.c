@@ -165,6 +165,51 @@ int all_checked(struct player *players, int num_players) {
 }
 
 /*
+int betting(struct player * players, int * highest_bet){
+  int i;
+  int done;
+  int ready=1; //1 until everyone either folded or at highest_bet, then goes to 0
+  while(ready){
+    for(i=0;i<numPlayers;i++){
+      done=1;
+      if(players[i].status==-1){
+	done=0;
+      }
+      while(done){
+	//send possible moves
+	//getresponse
+	if(strcmp(response, "check")){
+	  check(players, i);
+	  done=0;
+	}
+	if(strcmp(response, "call")){
+	  call(players, i, *highest_bet)
+	  done=0;
+	}
+	if(strcmp(response, "bet")){
+	  bet(respone_bet, highest_bet, players, i)
+	  done=0;
+	}
+	if(strcmp(response, "fold")){
+	  fold(players, i);
+	  done=0;
+	}
+      }
+    }
+  }
+  allReady(players, &ready);
+}
+
+put int server:
+disp3()
+betting()
+disp1()
+betting()
+disp1()
+betting()
+score()
+
+
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
