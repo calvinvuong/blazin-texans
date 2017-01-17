@@ -17,10 +17,16 @@ void print_IP( unsigned int queue[], int size ) {
 }
 
 // actively listens for new connections and adds their ip to ip_queue
-int listener( int sd, unsigned int *ip_queue, int *queue_size ) {
+// sets timeout if timeout == 1
+int listener( int sd, unsigned int *ip_queue, int *queue_size, int timeout ) {
   int connection;
-  connection = initial_server_connect(sd, &(ip_queue[*queue_size]));
+  connection = initial_server_connect(sd, &(ip_queue[*queue_size]), timeout);
   
+  if ( connection == -1 ) {// only reached if timeout == 1
+    close(connection);
+    return -1;
+  }
+
   char buffer[500];
   read( connection, &buffer, sizeof(buffer) );
   if ( strcmp(buffer, "client to listener") == 0 )
@@ -47,7 +53,7 @@ int transfer_IPs( unsigned int *ip_queue, int *queue_size, unsigned int *player_
 
   // remove transferred ips from ip_queue
   int j = num_players;
-  for ( i = 0; i < *queue_size - num_players - 1; i++ ) {
+  for ( i = 0; i < *queue_size - num_players; i++ ) {
     ip_queue[i] = ip_queue[i+j];
   }
   // update queue_size
@@ -96,12 +102,9 @@ int main() {
   
   while (1) {
 
-    printf("game_pid: %d\n", game_pid);
-    game_running = update_game_status(game_pid);
-    printf("game_running: %d\n", game_running);
-
-    if ( ! (queue_size > 1) || game_running == 1 )
-      listener(sd, ip_queue, &queue_size);
+    //printf("game_pid: %d\n", game_pid);
+    //game_running = update_game_status(game_pid);
+    //printf("game_running: %d\n", game_running);
 
     if ( queue_size > 1 && game_running == 0 ) { // ready to start game
       unsigned int player_IPs[4];
@@ -122,7 +125,16 @@ int main() {
 	}
       }
     }
-  }    
+    game_running = update_game_status(game_pid);
+    if ( ! (queue_size > 1) ) {
+      //printf("listening...\n");
+      listener(sd, ip_queue, &queue_size, 0); // listen w/o time outs
+    }
+    else if ( game_running == 1 ) {
+      listener(sd, ip_queue, &queue_size, 1); // listen w/ time outs
+    }
+    game_running = update_game_status(game_pid);
+  }   
 
   return 0;
 }

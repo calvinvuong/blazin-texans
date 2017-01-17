@@ -5,6 +5,7 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -36,17 +37,25 @@ int server_setup(int port) {
   return sd;
 }
 
-int initial_server_connect(int sd, unsigned int *ip) {
+int initial_server_connect(int sd, unsigned int *ip, int timeout) {
   int connection, i;
-
+  if ( timeout == 1 ) {
+    struct timeval time;      
+    time.tv_sec = 5;
+    time.tv_usec = 0;
+    setsockopt (sd, SOL_SOCKET, SO_RCVTIMEO, (char *)&time, sizeof(time));
+  }
   i = listen(sd, 1);
   error_check( i, "server listen" );
   
   struct sockaddr_in sock1;
   unsigned int sock1_len = sizeof(sock1);
   connection = accept( sd, (struct sockaddr *)&sock1, &sock1_len );
-  error_check( connection, "server accept" );
-  
+  //error_check( connection, "server accept" );
+
+  if ( connection == -1 ) // if timeout occurred, then do not alter ip list
+    return connection;
+
   printf("[server] connected to %s\n", inet_ntoa( sock1.sin_addr ) );
   *ip = sock1.sin_addr.s_addr;
   
