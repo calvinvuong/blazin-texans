@@ -1,4 +1,4 @@
-#incAOAlude "game_mec.c"
+#include "game_mec.c"
 #include "networking.c"
 #include "server.h"
 
@@ -79,7 +79,8 @@ int update_game_status(int pid) {
 int make_players(struct player players[], unsigned int player_IPs[], int num_players) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
-    
+  }
+  return 0;
 }
 
 // runs the game; takes an arrat of length 4 storing ip addresses
