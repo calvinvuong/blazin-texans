@@ -9,8 +9,8 @@
 #define GAME_MEC_H
 
 typedef struct card{
-  char num[3];
-  char suit;
+  int num;
+  int suit;
 } card;
 
 typedef struct player{
@@ -62,4 +62,8 @@ int all_checked(struct player *players, int num_players);
 int betting(struct player * players, int * highest_bet, int num_players);
 
 int all_ready(struct player * players, int highest_bet, int num_players);
+
+int addCards(struct card * river, int num_cards, struct card * deck, int *len_river);
+
 #endif
+
