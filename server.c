@@ -29,9 +29,10 @@ int listener( int sd, unsigned int *ip_queue, int *queue_size, int timeout ) {
   }
 
   char buffer[500];
+  int port_buff = 3019;
   read( connection, &buffer, sizeof(buffer) );
   if ( strcmp(buffer, "client to listener") == 0 )
-    write( connection, "received client to listener; please standby", sizeof("received client to listener; please standby") );
+    write( connection, &port_buff, sizeof(int) ); // send port to listen on to client
   close(connection);
 
   (*queue_size)++;
@@ -72,6 +73,7 @@ int update_game_status(int pid) {
     return 0;
 }
 
+/*
 // populates an array of players using player_IPs
 // takes an array of 4 player structs
 // takes an array of 4 ip addresses
@@ -79,13 +81,44 @@ int update_game_status(int pid) {
 int make_players(struct player players[], unsigned int player_IPs[], int num_players) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
+    
   }
   return 0;
-}
+} */
 
+// DIAGNOSTIC only
 // runs the game; takes an arrat of length 4 storing ip addresses
 int game(unsigned int player_IPs[], int num_players){
+  // establish socket connections with players
+  int client_connections[num_players];
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    client_connections[i] = client_connectB(player_IPs[i], 3019); 
+  }
   
+  // main game loop
+  i = 0;
+  while (1) {
+    char read_buffer[500];
+    // get info from player i
+    int curr_connect = client_connections[i];
+    write(curr_connect, "write", sizeof("write"));
+    read(curr_connect, &read_buffer, sizeof(read_buffer));
+
+    // send to all players
+    int j;
+    for ( j = 0; j < num_players; j++ ) {
+      curr_connect = client_connections[j];
+      write(curr_connect, read_buffer, sizeof(read_buffer));
+    }
+
+    // update i
+    if ( i == (num_players-1) )
+      i = 0;
+    else
+      i++;
+  }
+    /*
   printf("Game players:\n");
   //  while (1) {
   int k = 0;
@@ -98,6 +131,7 @@ int game(unsigned int player_IPs[], int num_players){
     sleep(2);
     k++;
   }
+  */
   return 0;
 }
   
@@ -139,7 +173,6 @@ int main() {
     }
     game_running = update_game_status(game_pid);
     if ( ! (queue_size > 1) ) {
-      //printf("listening...\n");
       listener(sd, ip_queue, &queue_size, 0); // listen w/o time outs
     }
     else if ( game_running == 1 ) {

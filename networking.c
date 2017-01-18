@@ -82,7 +82,7 @@ int secondary_server_connect(int sd) {
   connection = accept( sd, (struct sockaddr *)&sock1, &sock1_len );
   error_check( connection, "server accept" );
   
-  printf("[server] connected to %s\n", inet_ntoa( sock1.sin_addr ) );
+  printf("[real client] connected to %s\n", inet_ntoa( sock1.sin_addr ) );
 
   return connection;
 }
@@ -105,3 +105,24 @@ int client_connect( char *host, int port ) {
   
   return sd;
 }
+
+// same as client_connect(), but takes in the host ip in binary
+int client_connectB( unsigned int host, int port ){
+  int sd, i;
+  
+  sd = socket( AF_INET, SOCK_STREAM, 0 );
+  error_check( sd, "client socket" );
+  
+  struct sockaddr_in sock;
+  sock.sin_family = AF_INET;
+  //inet_aton( host, &(sock.sin_addr));
+  sock.sin_addr.s_addr = host;
+  sock.sin_port = htons(port);
+  
+  printf("[client] connecting to: %d\n", host );
+  i = connect( sd, (struct sockaddr *)&sock, sizeof(sock) );
+  error_check( i, "client connect");
+  
+  return sd;
+}
+

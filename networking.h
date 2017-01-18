@@ -25,5 +25,5 @@ int initial_server_connect(int sd, unsigned int *ip, int timeout);
 
 
 int client_connect( char *host, int port );
-
+int client_connectB( unsigned int host, int port );
 #endif

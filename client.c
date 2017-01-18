@@ -8,18 +8,36 @@ int main() {
 
   sd = client_connect(host, 1379);
 
-  char buffer[500];
-  //  int i = 0;
-  //while ( 1 ) {
+  int port; // this is the port to listen on
 
+  // initiate connection
   write( sd, "client to listener", sizeof("client to listener")  );
-  
-  read(sd, &buffer, sizeof(buffer));
-  
+  // get port to listen on
+  read(sd, &port, sizeof(int));
   close(sd);
   
-  printf("%s\n", buffer);
-    //}    
+  printf("%d\n", port);
 
+  // receive connection from actual server for game communications
+  int connection;
+  sd = server_setup(port);
+  connection = secondary_server_connect(sd);
+
+  char read_buffer[500];
+  char write_buffer[500];
+  while (1) {
+    read(connection, &read_buffer, sizeof(read_buffer));
+    if ( strcmp(read_buffer, "write") == 0 ) {
+      printf("send something to server: \n");
+      fgets(write_buffer, sizeof(write_buffer), stdin);
+      *strchr(write_buffer, '\n') = 0; // get rid of new line
+      write(connection, write_buffer, sizeof(write_buffer));
+    }
+    else if ( strcmp(read_buffer, "read") == 0 ) {
+      read(connection, &read_buffer, sizeof(read_buffer));
+      printf("here's something from the server\n");
+      printf("%s\n", read_buffer);
+    }
+  }
   return 0;
 }
