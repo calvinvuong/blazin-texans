@@ -20,8 +20,10 @@ typedef struct player{
 */
 
 int makeDeck(struct card * deck){
-  char suits[4]={'D','C', 'H', 'S'};
-  char * nums[13]={"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
+  int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
+  // if num == 0, card is removed
+  // Ace is 14
+  int nums[14]={0,2,3,4,5,6,7,8,9,10,11,12,13,14};
   
   int i;
   int j;
@@ -29,16 +31,23 @@ int makeDeck(struct card * deck){
   for(i=0;i<4;i++){
     for(j=0;j<13;j++){
       struct card tempCard;
-      strcpy(tempCard.num, nums[j]);
-      tempCard.suit=suits[i];
-      deck[i*13+j]=tempCard;
+      tempCard.num = nums[j];
+      tempCard.suit = suits[i];
+      deck[i*13+j] = tempCard;
     }
   }
   return 0;
 }
 
 void printCard(struct card c) {
-  printf("%s%c", c.num, c.suit);
+  char suit_chars[4] = {'D', 'C', 'H', 'S'};
+  char * num_strs[5] = {"10", "J", "Q", "K", "A"};
+  if ( c.num == 0 ) // do nothing if card does not exist
+    return;
+  else if ( c.num < 10 )
+    printf("%d%c", c.num, suit_chars[c.suit]);
+  else 
+    printf("%s%c", num_strs[c.num-10], suit_chars[c.suit]);  
 }
 
 // doesn't necessarily have to be a deck, just an array of cards
@@ -73,7 +82,7 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
 int top_card_pos(struct card * deck) {
   int i = 0;
   while ( i < 52 ) {
-    if ( strcmp(deck[i].num, "N") != 0 )
+    if ( deck[i].num != 0 )
       return i;
     i++;
   }
@@ -88,11 +97,11 @@ struct card remove_card(struct card * deck) {
   
   // copy top card
   struct card tmp_card; // card to be returned
-  strcpy(tmp_card.num, (deck[top_card]).num);
+  tmp_card.num = (deck[top_card]).num;
   tmp_card.suit = (deck[top_card]).suit;
 
   // "remove" top card from deck
-  strcpy((deck[top_card]).num, "N");
+  (deck[top_card]).num = 0;
 
   return tmp_card;
 }
