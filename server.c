@@ -104,11 +104,17 @@ int game(unsigned int player_IPs[], int num_players){
     int curr_connect = client_connections[i];
     write(curr_connect, "write", sizeof("write"));
     read(curr_connect, &read_buffer, sizeof(read_buffer));
+    printf("read from client: %s\n", read_buffer);
+
+    // exit case
+    if ( strcmp(read_buffer, "exit") == 0 )
+      return;
 
     // send to all players
     int j;
     for ( j = 0; j < num_players; j++ ) {
       curr_connect = client_connections[j];
+      write(curr_connect, "read", sizeof("read"));
       write(curr_connect, read_buffer, sizeof(read_buffer));
     }
 
