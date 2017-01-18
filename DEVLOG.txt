@@ -14,4 +14,8 @@ cVuong -- 01/12/17 12:20 -- wrote some auxilliary game mechanic functions like a
 
 gioT -- 01/13/17 6:48 -- tested bet, call, fold, check
 
+cVuong -- 01/16/17 all day -- wrote and tested part 1 of networking aspect (i.e. listening for connections while a game is going on)
+
 gioT -- 01/17/17 15:30 -- wrote betting and all_ready, still have to test
+
+cVuong -- 01/17/17 7:54 -- wrote and tested part 2 of networking aspect (i.e. game communications after initial connection established)
