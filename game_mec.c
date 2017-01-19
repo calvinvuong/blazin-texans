@@ -248,12 +248,33 @@ int all_ready(struct player * players, int highest_bet, int num_players){
   }
   return 0;
 }
+
 /*
 int main() {
   return 0;
 }
 */
-/*
+
+int send_possible_moves(struct player * players, int player_num, int high_bet) {
+  struct packet_server_to_client pack;
+  pack.type = 2;
+  pack.highest_bet = high_bet;
+
+  int opt_list[4];
+  get_options(opt_list, players, player_num, high_bet);
+  pack.options = opt_list;
+  
+  write(players[player_num].socket_connection, pack, sizeof(*pack));
+
+  return 0;
+}
+
+// returns resonse got from player
+char * get_move_response(struct player * players, int player_num, struct packet_client_to_server * pack) {
+  return "";
+}
+  
+ 
 int betting(struct player * players, int * highest_bet, int numPlayers){
   int i;
   int done;
@@ -266,7 +287,11 @@ int betting(struct player * players, int * highest_bet, int numPlayers){
       }
       while(done){
 	//send possible moves, pot, highest bet, cards, river
+	struct packet_client_to_sever pack;
+	send_possible_moves(players, i, highest_bet, &pack);
 	//getresponse
+	//char response[50] =  
+
 	if(strcmp(response, "check")){
 	  check(players, i);
 	  done=0;
@@ -294,7 +319,7 @@ int betting(struct player * players, int * highest_bet, int numPlayers){
   }
   ready=all_ready(players, *highest_bet);
 }
-
+/*
 put int server:
 deal()
 betting()

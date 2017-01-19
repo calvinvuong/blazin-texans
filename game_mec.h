@@ -36,14 +36,12 @@ typedef struct packet_server_to_client {
 
   struct player player_list[4]; // client will use info from player structs to display game
   int player_length;
+  int player_num; // this players num
   // consider a next player var?
 
-
-  // stuff for dealing cards
-  struct card hand[2];
   
   // stuff for prompting
-  int options[5];
+  int options[4];
   // [fold, check, call, bet]
   // [1, 0, 1, 1]     if option is available, corresponding position is on w/ 1; off w/ 0
 } packet_server_to_client;
