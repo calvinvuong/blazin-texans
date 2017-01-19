@@ -140,6 +140,17 @@ struct card remove_card(struct card * deck) {
   return tmp_card;
 }
 
+// takes an int array of size 4 containing player options
+// populates array w/ options; 0 = no option, 1 = yes option
+// [fold, check, call, bet]
+int get_options(int option_list[], struct player players[], int player_num, int highest_bet) {
+  option_list[0] = 1; // can always fold
+  option_list[1] = can_check(players, player_num, highest_bet);
+  option_list[2] = can_call(players, player_num, highest_bet);
+  option_list[3] = can_bet(players, player_num, highest_bet);
+  return 0;
+}
+
 int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum){
   if(amount_to_bet > players[playerNum].money || amount_to_bet <= *highest_bet){
     return -1;
@@ -175,14 +186,35 @@ int call(struct player * players, int playerNum, int highest_bet){
   return 0;
 }
 
-// returns 0 if player playerNum has met the highest_bet requirement and can check
-// -1 otherwise (i.e. has to fold or call)
+// returns 1 if player playerNum has met the highest_bet requirement and can check
+// 0 otherwise (i.e. has to fold or call)
 // use this function in determining which options the player can choose from
 int can_check(struct player *players, int playerNum, int highest_bet) {
-  if ( players[playerNum].bet == highest_bet )
+  if ( (players[playerNum].bet == highest_bet) || (players[playerNum].money == 0) )
     return 0;
   
   return -1;
+}
+
+// returns 1 if the player playerNum can call
+// 0 otherwise
+int can_call(struct player *players, int playerNum, int highest_bet) {
+  if ( can_check(players, playerNum, highest_bet) == 1 ) // if you can check, you can't call
+    return 0;
+
+  if ( (players[playerNum].money) >= (highest_bet - players[playerNum].bet) )
+    return 1;
+  else
+    return 0;
+}
+
+// returns 1 if the player playerNum can bet more money than the highest bet
+// 0 otherwise
+int can_bet(struct player *players, int playerNum, int highest_bet) {
+  if ( (players[playerNum].money) > (highest_bet - players[playerNum].bet) )
+    return 1;
+  else
+    return 0;
 }
 
 // returns 0 if all players have folded

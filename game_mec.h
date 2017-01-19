@@ -74,6 +74,8 @@ int top_card_pos(struct card *deck);
 
 struct card remove_card(struct card *deck);
 
+int get_options(int option_list[], struct player players[], int player_num, int highest_bet);
+
 int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum);
 
 int call(struct player * players, int playerNum, int highest_bet);
@@ -86,6 +88,10 @@ int fold(struct player *players, int playerNum);
 // -1 otherwise (i.e. has to fold or call)
 int can_check(struct player *players, int playerNum, int highest_bet);
 
+int can_call(struct player *players, int playerNum, int highest_bet);
+
+int can_bet(struct player *players, int playerNum, int highest_bet);
+
 int all_folded(struct player *players, int num_players);
 
 int all_checked(struct player *players, int num_players);
@@ -95,6 +101,9 @@ int betting(struct player * players, int * highest_bet, int num_players);
 int all_ready(struct player * players, int highest_bet, int num_players);
 
 int addCards(struct card * river, int num_cards, struct card * deck, int *len_river);
+
+// reset player bet amount and status
+int round_reset(struct player players[], int player_num);
 
 #endif
 
