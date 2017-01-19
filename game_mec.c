@@ -83,7 +83,7 @@ int addCards(struct card * river, int num_cards, struct card * deck, int *len_ri
   while(i<num_cards){
     river[*len_river]=remove_card(deck);
     i++;
-    *len_river++;
+    (*len_river)++;
   }
   return 0;
 }
@@ -194,8 +194,11 @@ int all_ready(struct player * players, int highest_bet, int num_players){
   return 0;
 }
 
-/*
+int main() {
+  return 0;
+}
 
+/*
 int betting(struct player * players, int * highest_bet){
   int i;
   int done;
@@ -234,7 +237,7 @@ int betting(struct player * players, int * highest_bet){
       }
     }
   }
-  ready=allReady(players, *highest_bet);
+  ready=all_ready(players, *highest_bet);
 }
 
 put int server:
