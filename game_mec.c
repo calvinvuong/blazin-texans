@@ -216,11 +216,11 @@ int all_ready(struct player * players, int highest_bet, int num_players){
   }
   return 0;
 }
-
+/*
 int main() {
   return 0;
 }
-
+*/
 /*
 int betting(struct player * players, int * highest_bet, int numPlayers){
   int i;
