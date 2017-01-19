@@ -108,7 +108,7 @@ int game(unsigned int player_IPs[], int num_players){
 
     // exit case
     if ( strcmp(read_buffer, "exit") == 0 )
-      return;
+      return -1;
 
     // send to all players
     int j;

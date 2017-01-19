@@ -21,7 +21,7 @@ void error_check( int i, char *s );
 
 int server_setup(int port);
 int initial_server_connect(int sd, unsigned int *ip, int timeout);
-
+int secondary_server_connect(int sd);
 
 int client_connect( char *host, int port );
 int client_connectB( unsigned int host, int port );
