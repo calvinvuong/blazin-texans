@@ -1,5 +1,5 @@
 #include "game_mec.h"
-#include "networking.c"
+#include "networking.h"
 
 int main() {
 

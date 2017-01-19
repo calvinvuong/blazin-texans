@@ -24,12 +24,43 @@ typedef struct player{
   int socket_connection;
 } player;
 
+// will contain info sent from server to client
+// whether it asks for something or is just an update
+typedef struct packet_server_to_client {
+  int type; // 0 if just for updating info; 1 for dealing cards; 2 if need a response back
+  int highest_bet;
+
+  // stuff for updating
+  struct card stream[5]; // cards on the table
+  int stream_length;
+
+  struct player player_list[4]; // client will use info from player structs to display game
+  int player_length;
+  // consider a next player var?
+
+
+  // stuff for dealing cards
+  struct card hand[2];
+  
+  // stuff for prompting
+  int options[5];
+  // [fold, check, call, bet]
+  // [1, 0, 1, 1]     if option is available, corresponding position is on w/ 1; off w/ 0
+} packet_server_to_client;
+
+typedef struct packet_client_to_server {
+  int option_choice;
+  int bet_amount; // for bet option only; bet amount for call is determined server side
+} packet_client_to_server;
+
 struct player * players;
 
 // cards removed from the deck are marked with num "N"
 struct card * deck;
 
 struct card * river;
+
+int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players);
 
 int makeDeck(struct card * deck);
 

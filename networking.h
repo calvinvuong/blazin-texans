@@ -17,7 +17,6 @@
 
 #define MESSAGE_BUFFER_SIZE 1000
 
-
 void error_check( int i, char *s );
 
 int server_setup(int port);

@@ -1,5 +1,5 @@
-#include "game_mec.c"
-#include "networking.c"
+#include "game_mec.h"
+#include "networking.h"
 #include "server.h"
 
 /*STANDARDS:

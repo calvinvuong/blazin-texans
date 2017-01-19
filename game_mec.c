@@ -1,10 +1,10 @@
 #include "game_mec.h"
+#include "networking.h"
 
 /* FOR REFERENCE ONLY
-
 typedef struct card{
-  char num[3];
-  char suit;
+  int num;
+  int suit;
 } card;
 
 typedef struct player{
@@ -18,6 +18,29 @@ typedef struct player{
   int socket_connection;
 } player;
 */
+
+// for this to work struct player player_list[4]; must be statically initialized in server and passed in
+// if this doesn't work, it might have to take in pointers and dereference
+int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    // empty hand
+    player_list[i].hand[0].num = 0;
+    player_list[i].hand[1].num = 0;
+
+    // player info
+    player_list[i].player_num = i;
+    player_list[i].bet = 0;
+    player_list[i].money = 500;
+    player_list[i].score = 0;
+    player_list[i].status = 1; // CHECK THIS
+
+    //networking stuff
+    player_list[i].ip_address = player_IPs[i];
+    player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
+  }
+  return 0;
+}
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
@@ -199,7 +222,7 @@ int main() {
 }
 
 /*
-int betting(struct player * players, int * highest_bet){
+int betting(struct player * players, int * highest_bet, int numPlayers){
   int i;
   int done;
   int ready=1; //1 until everyone either folded or at highest_bet, then goes to 0
