@@ -14,7 +14,7 @@ int updateScore(player player, int currentscore) {
 int updateScores(player * players, int numplayers) { //update score of each player
   int i;
   for (i = 0; i < numplayers; i++) {
-    players[i].score = updateScore(player player, int currentscore);
+    players[i].score = updateScore(players[i], players[i].score);
   }
   return 0;
 }
