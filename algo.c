@@ -5,20 +5,26 @@
 
 //https://github.com/gTopa/PokeHerPokeMe/blob/master/Poker/Hand.pde
 
-int updateScores(player * players) { //update score of each player
-  int n = sizeof(players);
+int updateScore(player player, int currentscore) {
+  sort(player.hand);
+  int newscore = currentscore + handValue(player.hand);
+  return newscore;
+}
+
+int updateScores(player * players, int numplayers) { //update score of each player
   int i;
-  for (i = 0; i < n; i++) {
-    players[i].score = 123;
+  for (i = 0; i < numplayers; i++) {
+    players[i].score = updateScore(player player, int currentscore);
   }
   return 0;
 }
 
-int winningHand(player * players){ //return a player_num
+
+
+int winningHand(player * players, int numplayers){ //return a player_num
   int champ = 0;
-  int n = sizeof(players);
   int i;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < numplayers; i++){
     if (players[i].score > players[champ].score)
       champ = i;
   }
@@ -27,7 +33,7 @@ int winningHand(player * players){ //return a player_num
   
 
 int swap (card *a, card *b){
-  card temp;
+  struct card temp;
   temp = *a;
   *a = *b;
   *b = temp;
@@ -36,9 +42,8 @@ int swap (card *a, card *b){
 
 int shuffle( card * deck) {
   srand ( time(NULL) );
-  int n = sizeof(deck);
   int i;
-  for (i = n-1; i>0; i--) {
+  for (i = 51; i>0; i--) {
     int j = rand() % (i+1);
     swap(&deck[i], &deck[j]);
   }
@@ -54,11 +59,10 @@ int compareTwo (card card1, card card2) { //Java equiv: card1.compareTo(card2)
 }
 
 int sort(card * hand) {
-  int n, x, y, imin, temp;
-  n = sizeof(hand);
-  for (x = 0; x < n; x++) {
+  int x, y, imin, temp;
+  for (x = 0; x < 5; x++) {
     imin = x;
-    for (y = x; y < n; y++) {
+    for (y = x; y < 5; y++) {
       if (compareTwo(hand[y],hand[imin]) == -1) {
 	imin = y;
       }
@@ -201,5 +205,9 @@ int isFull(card * hand) {
 
 
 int main() {
+  struct card c1, c2, c3, c4, c5;
+  struct card hand[5];
+  
+  
   return 0;
 }

@@ -5,9 +5,11 @@
 #ifndef ALGO_H
 #define ALGO_H
 
-int updateScores(player * players);
+int updateScore(player player, int numplayers);
 
-int winningHand(player * players);
+int updateScores(player * players, int numplayers);
+
+int winningHand(player * players, int numplayers);
 
 int swap(card * a, card * b);
 
