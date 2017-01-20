@@ -254,17 +254,7 @@ int all_ready(struct player * players, int num_players, int highest_bet){
 
 // sends an int array of 4
 int send_possible_moves(struct player * players, int player_num, int high_bet) {
-  int opt_list[4];
-  get_options(opt_list, players, player_num, high_bet);
-  write(players[player_num].socket_connection, opt_list, sizeof(opt_list));
-  return 0;
-}
 
-int send_highest_bet(struct player * players, int player_num, int high_bet) {
-  write(players[player_num].socket_connection, &high_bet, sizeof(int));
-  return 0;
-}
-/*
   struct packet_server_to_client pack;
   pack.type = 2;
   pack.highest_bet = high_bet;
@@ -273,33 +263,51 @@ int send_highest_bet(struct player * players, int player_num, int high_bet) {
   get_options(opt_list, players, player_num, high_bet);
   pack.options = opt_list;
   
-  write(players[player_num].socket_connection, pack, sizeof(*pack));
+  write(players[player_num].socket_connection, pack, sizeof(pack));
 
   return 0;
 }
-*/
 
-// returns response number from client
+
+// returns response number from client; modifies high_bet if necessary
 // 0: fold
 // 1: check
 // 2: call
 // 3: bet
-int get_move_response(struct player * players, int player_num) {
-  int response;
-  read(players[player_num].socket_connection, &response, sizeof(int)); 
-  return response;
+int get_move_response(struct player * players, int player_num, int * high_bet) {
+  struct packet_client_to_server pack;
+  read(players[player_num].socket_connection, &pack, sizeof(pack)); 
+  *high_bet = pack.bet_amount; // bet checking is done client side
+  return pack.option_choice;
 }
 
-// returns money value of what client wants to bet
-// checking is done client side
-int get_response_bet(struct player * players, int player_num) {
-  int response;
-  read(players[player_num].socket_connection, &response, sizeof(int));
-  return response;
+// sends to all clients info about the game
+int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    struct packet_server_to_client pack;
+    pack.type = 0;
+    pack.highest_bet = high_bet;
+    
+    pack.stream = river;
+    pack.stream_length = river_len;
+    
+    // populate player list
+    int j;
+    for ( j = 0; j < num_players; j++ )
+      pack.player_list[i] = players[i];
+    
+    pack.player_length = num_players;
+    pack.player_num = i;
+
+    write(players[i].socket_connection, &pack, sizeof(pack));
+  }
+
+  return 0;
 }
-  
- 
-int betting(struct player * players, int * highest_bet, int numPlayers){
+
+// make sure you call betting with &highest_bet
+int betting(struct player * players, int * highest_bet, int numPlayers. struct card river[], int river_len){
   int i;
   int done;
   int ready=1; //1 until everyone either folded or at highest_bet, then goes to 0
@@ -312,39 +320,33 @@ int betting(struct player * players, int * highest_bet, int numPlayers){
       while(done){
 	//send possible moves, pot, highest bet, cards, river
 	send_possible_moves(players, i, *highest_bet);
-	// send highest_bet so client side can check if player bets enough
-	send_highest_bet(players, i, *highest_bet);
 	
 	//getresponse
-	int response = get_move_response(players, i);
-	int response_bet = get_response_bet(players, i);
+	int response = get_move_response(players, i, highest_bet);
 	
 	//if(strcmp(response, "check")){
 	if (response == 1) { //check
 	  check(players, i);
 	  done=0;
-	  //send to all players what happened
 	}
 
 	//if(strcmp(response, "call")){
-	if ( response == 2 ) { //call
+	else if ( response == 2 ) { //call
 	  call(players, i, *highest_bet);
 	  done=0;
-	  //send to all players what happened
 	}
 
 	//if(strcmp(response, "bet")){
-	if (response == 3 ) { // bet
+	else if (response == 3 ) { // bet
 	  bet(response_bet, highest_bet, players, i);
 	  done=0;
-	  //send to all players what happened
 	}
 	//if(strcmp(response, "fold")){
-	if ( response == 0 ) { // fold
+	else if ( response == 0 ) { // fold
 	  fold(players, i);
 	  done=0;
-	  //send to all players what happened
 	}
+	// send to all players what happened
       }
     }
   }
