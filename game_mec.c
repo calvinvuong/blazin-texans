@@ -306,8 +306,23 @@ int update_client(struct player * players, int num_players, int high_bet, struct
   return 0;
 }
 
+
+int print_player_info(struct card * river, struct player * players, int player_num, int num_players){
+  int i;
+  for(i=0;i<num_players;i++){
+    printf("Player %d: status: %d \n bet: %d \n money: %d \n", i, players[i].status, players[i].bet, players[i].money);
+    if(i==player_num){
+      printf("Your hand: ");
+      printDeck(players[i].hand,2);
+      printf("\n");
+    }
+  }
+  printDeck(river, 5);
+}
+
 // make sure you call betting with &highest_bet
-int betting(struct player * players, int * highest_bet, int numPlayers. struct card river[], int river_len){
+int betting(struct player * players, int * highest_bet, int numPlayers. struct card river[], int river_len){ 
+
   int i;
   int done;
   int ready=1; //1 until everyone either folded or at highest_bet, then goes to 0
