@@ -46,7 +46,7 @@ int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
   // if num == 0, card is removed
   // Ace is 14
-  int nums[14]={0,2,3,4,5,6,7,8,9,10,11,12,13,14};
+  int nums[13]={1,2,3,4,5,6,7,8,9,10,11,12,13};
   
   int i;
   int j;
@@ -64,9 +64,11 @@ int makeDeck(struct card * deck){
 
 void printCard(struct card c) {
   char suit_chars[4] = {'D', 'C', 'H', 'S'};
-  char * num_strs[5] = {"10", "J", "Q", "K", "A"};
+  char * num_strs[4] = {"10", "J", "Q", "K"};
   if ( c.num == 0 ) // do nothing if card does not exist
     return;
+  else if ( c.num == 1 ) // ace
+    printf("%c%c", 'A', suit_chars[c.suit]);
   else if ( c.num < 10 )
     printf("%d%c", c.num, suit_chars[c.suit]);
   else 
@@ -239,7 +241,7 @@ int all_checked(struct player *players, int num_players) {
   return 0;
 }
 
-int all_ready(struct player * players, int highest_bet, int num_players){
+int all_ready(struct player * players, int num_players, int highest_bet){
   int i;
   for(i=0;i<num_players;i++){
     if((players[i].status==0&&players[i].bet-highest_bet)||(players[i].status==1&&players[i].bet-highest_bet)){
@@ -249,17 +251,24 @@ int all_ready(struct player * players, int highest_bet, int num_players){
   return 0;
 }
 
-/*
-int main() {
+
+// sends an int array of 4
+int send_possible_moves(struct player * players, int player_num, int high_bet) {
+  int opt_list[4];
+  get_options(opt_list, players, player_num, high_bet);
+  write(players[player_num].socket_connection, opt_list, sizeof(opt_list));
   return 0;
 }
-*/
 
-int send_possible_moves(struct player * players, int player_num, int high_bet) {
+int send_highest_bet(struct player * players, int player_num, int high_bet) {
+  write(players[player_num].socket_connection, &high_bet, sizeof(int));
+  return 0;
+}
+/*
   struct packet_server_to_client pack;
   pack.type = 2;
   pack.highest_bet = high_bet;
-
+  
   int opt_list[4];
   get_options(opt_list, players, player_num, high_bet);
   pack.options = opt_list;
@@ -268,10 +277,25 @@ int send_possible_moves(struct player * players, int player_num, int high_bet) {
 
   return 0;
 }
+*/
 
-// returns resonse got from player
-char * get_move_response(struct player * players, int player_num, struct packet_client_to_server * pack) {
-  return "";
+// returns response number from client
+// 0: fold
+// 1: check
+// 2: call
+// 3: bet
+int get_move_response(struct player * players, int player_num) {
+  int response;
+  read(players[player_num].socket_connection, &response, sizeof(int)); 
+  return response;
+}
+
+// returns money value of what client wants to bet
+// checking is done client side
+int get_response_bet(struct player * players, int player_num) {
+  int response;
+  read(players[player_num].socket_connection, &response, sizeof(int));
+  return response;
 }
   
  
@@ -287,29 +311,36 @@ int betting(struct player * players, int * highest_bet, int numPlayers){
       }
       while(done){
 	//send possible moves, pot, highest bet, cards, river
-	struct packet_client_to_sever pack;
-	send_possible_moves(players, i, highest_bet, &pack);
+	send_possible_moves(players, i, *highest_bet);
+	// send highest_bet so client side can check if player bets enough
+	send_highest_bet(players, i, *highest_bet);
+	
 	//getresponse
-	//char response[50] =  
-
-	if(strcmp(response, "check")){
+	int response = get_move_response(players, i);
+	int response_bet = get_response_bet(players, i);
+	
+	//if(strcmp(response, "check")){
+	if (response == 1) { //check
 	  check(players, i);
 	  done=0;
 	  //send to all players what happened
 	}
-	// check if can call in client
-	if(strcmp(response, "call")){
-	  call(players, i, *highest_bet)
+
+	//if(strcmp(response, "call")){
+	if ( response == 2 ) { //call
+	  call(players, i, *highest_bet);
 	  done=0;
 	  //send to all players what happened
 	}
-	// check if can bet in client
-	if(strcmp(response, "bet")){
-	  bet(respone_bet, highest_bet, players, i)
+
+	//if(strcmp(response, "bet")){
+	if (response == 3 ) { // bet
+	  bet(response_bet, highest_bet, players, i);
 	  done=0;
 	  //send to all players what happened
 	}
-	if(strcmp(response, "fold")){
+	//if(strcmp(response, "fold")){
+	if ( response == 0 ) { // fold
 	  fold(players, i);
 	  done=0;
 	  //send to all players what happened
@@ -317,7 +348,8 @@ int betting(struct player * players, int * highest_bet, int numPlayers){
       }
     }
   }
-  ready=all_ready(players, *highest_bet);
+  ready=all_ready(players, numPlayers, *highest_bet);
+  return 0;
 }
 /*
 put int server:

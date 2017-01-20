@@ -21,3 +21,5 @@ gioT -- 01/17/17 15:30 -- wrote betting and all_ready, still have to test
 cVuong -- 01/17/17 7:54 -- wrote and tested part 2 of networking aspect (i.e. game communications after initial connection established)
 
 cVuong -- 01/18/17 11:30 -- wrote structs to organize sent data; wrote makefile; updated structs to new format
+
+cVuong -- 01/19/17 11:07 -- altered how we plan on organizing data to send (no longer sending structs over sockets); changed which int to represent ace; debugged; updated headers

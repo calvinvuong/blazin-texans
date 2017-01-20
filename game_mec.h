@@ -96,12 +96,19 @@ int all_checked(struct player *players, int num_players);
 
 int betting(struct player * players, int * highest_bet, int num_players);
 
-int all_ready(struct player * players, int highest_bet, int num_players);
+int all_ready(struct player * players, int num_players, int highest_bet);
 
 int addCards(struct card * river, int num_cards, struct card * deck, int *len_river);
 
 // reset player bet amount and status
 int round_reset(struct player players[], int player_num);
+
+// networking send stuff
+int send_possible_moves(struct player *players, int player_num, int high_bet);
+int send_highest_bet(struct player *players, int player_num, int high_bet);
+
+int get_move_response(struct player * players, int player_num);
+int get_response_bet(struct player * players, int player_num);
 
 #endif
 
