@@ -94,7 +94,7 @@ int all_folded(struct player *players, int num_players);
 
 int all_checked(struct player *players, int num_players);
 
-int betting(struct player * players, int * highest_bet, int num_players);
+int betting(struct player * players, int * highest_bet, int num_players, struct card river[], int river_len);
 
 int print_player_info(struct card * river, struct player * players, int player_num, int num_players);
 
@@ -107,10 +107,9 @@ int round_reset(struct player players[], int player_num);
 
 // networking send stuff
 int send_possible_moves(struct player *players, int player_num, int high_bet);
-int send_highest_bet(struct player *players, int player_num, int high_bet);
 
-int get_move_response(struct player * players, int player_num);
-int get_response_bet(struct player * players, int player_num);
+int get_move_response(struct player * players, int player_num, int * high_bet);
 
+int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len) {
 #endif
 
