@@ -94,7 +94,8 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
   while ( i < num_players ) {
     int j = 0;
     while ( j < num_cards) {
-      players[i].hand[j] = remove_card(deck);
+      
+      players[i].hand[j] = remove_card(deck, );
       j++;
     }
     i++;
@@ -128,7 +129,7 @@ int top_card_pos(struct card * deck) {
 // removes the first cards from the deck
 // marks the removed spot with num "N"
 // returns the card struct removed
-struct card remove_card(struct card * deck) {
+struct card remove_card(struct card * deck, struct card rtrn) {
   int top_card = top_card_pos(deck);
   
   // copy top card
@@ -139,7 +140,7 @@ struct card remove_card(struct card * deck) {
   // "remove" top card from deck
   (deck[top_card]).num = 0;
 
-  return tmp_card;
+  rtrn = tmp_card;
 }
 
 // takes an int array of size 4 containing player options
