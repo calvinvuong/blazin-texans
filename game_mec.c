@@ -297,7 +297,19 @@ int get_response_bet(struct player * players, int player_num) {
   read(players[player_num].socket_connection, &response, sizeof(int));
   return response;
 }
-  
+
+int print_player_info(struct card * river, struct player * players, int player_num, int num_players){
+  int i;
+  for(i=0;i<num_players;i++){
+    printf("Player %d: status: %d \n bet: %d \n money: %d \n", i, players[i].status, players[i].bet, players[i].money);
+    if(i==player_num){
+      printf("Your hand: ");
+      printDeck(players[i].hand,2);
+      printf("\n");
+    }
+  }
+  printDeck(river, 5);
+}
  
 int betting(struct player * players, int * highest_bet, int numPlayers){
   int i;
