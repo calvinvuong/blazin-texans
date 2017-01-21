@@ -44,9 +44,9 @@ typedef struct player{
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
-  // if num == 0, card is removed
-  // Ace is 14
-  int nums[13]={1,2,3,4,5,6,7,8,9,10,11,12,13};
+  // if num == -1, card is removed
+  // Ace is 12
+  int nums[13]={0,1,2,3,4,5,6,7,8,9,10,11,12};
   
   int i;
   int j;
@@ -64,15 +64,11 @@ int makeDeck(struct card * deck){
 
 void printCard(struct card c) {
   char suit_chars[4] = {'D', 'C', 'H', 'S'};
-  char * num_strs[4] = {"10", "J", "Q", "K"};
-  if ( c.num == 0 ) // do nothing if card does not exist
+  char * num_strs[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+  if ( c.num == -1 ) // do nothing if card does not exist
     return;
-  else if ( c.num == 1 ) // ace
-    printf("%c%c", 'A', suit_chars[c.suit]);
-  else if ( c.num < 10 )
-    printf("%d%c", c.num, suit_chars[c.suit]);
   else 
-    printf("%s%c", num_strs[c.num-10], suit_chars[c.suit]);  
+    printf("%s%c", num_strs[c.num], suit_chars[c.suit]);  
 }
 
 // doesn't necessarily have to be a deck, just an array of cards
@@ -122,7 +118,7 @@ int addCards(struct card * river, int num_cards, struct card * deck, int *len_ri
 int top_card_pos(struct card * deck) {
   int i = 0;
   while ( i < 52 ) {
-    if ( deck[i].num != 0 )
+    if ( deck[i].num != -1 )
       return i;
     i++;
   }
@@ -141,7 +137,7 @@ struct card remove_card(struct card * deck, struct card rtrn) {
   tmp_card.suit = (deck[top_card]).suit;
 
   // "remove" top card from deck
-  (deck[top_card]).num = 0;
+  (deck[top_card]).num = -1;
 
   rtrn = tmp_card;
   return rtrn;
@@ -390,7 +386,7 @@ turn_river()
 betting()
 score()
 */
-/*
+
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
@@ -415,7 +411,7 @@ int main(){
   }
 
   printDeck(deck, 52);
-*/
+
   /*
   printf("\n\n %d\n",check(players, 0));
   printf("\n %d \n", bet(100,&highest_bet,players,1));
@@ -432,9 +428,9 @@ int main(){
     printf("\n\nplayer %d's status %d \n", j, players[j].status);
   }
 */
-/*
+
   free(players);
   free(deck);
   return 0;
 }
-*/
+
