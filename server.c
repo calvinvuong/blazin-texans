@@ -192,6 +192,8 @@ int main() {
 	    //find_max();
 	    //move_money();
 	    //check_if_broke();
+	    free(deck);
+	    free(river);
 	  }
 	  //game(player_IPs, num_players); // start game
 	  printf("hi\n");
