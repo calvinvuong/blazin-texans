@@ -112,6 +112,8 @@ int get_move_response(struct player * players, int player_num, int * bet_respons
 
 int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len);
 
-int check_if_broke(struct player * players, int * num_alive);
+int people_broke(struct player * players, int *num_alive, int num_players);
+
+
 #endif
 

@@ -171,7 +171,32 @@ int main() {
 	game_pid = fork();
 	signal(SIGCHLD, SIG_IGN); // circumvents waiting
 	if ( game_pid == 0 ) {  // child process
-	  game(player_IPs, num_players); // start game
+	  struct player * players=(struct player *) malloc(sizeof(struct player)*num_players);
+	  makePlayers(players,ip_queue, num_players);
+	  int num_alive=num_players;
+	  while(num_players>1){
+	    struct card * deck=(struct card *) malloc(sizeof(struct card)*53);
+	    struct card * river=(struct card *) malloc(sizeof(struct card)*5);
+	    int len_river=0;
+	    int highest_bet=0;
+	    makeDeck(deck);
+	    //shuffle(deck);
+	    deal(players, num_players, deck, 2);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 3, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 1, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 1, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    //score_players();
+	    //find_max();
+	    //move_money();
+	    check_if_broke(players, &num_alive, num_players);
+	    free(deck);
+	    free(river);
+	  }
+	  //game(player_IPs, num_players); // start game
 	  printf("hi\n");
 	  exit(0);
 	}

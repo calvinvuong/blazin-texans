@@ -40,13 +40,13 @@ int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_
     player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
   }
   return 0;
-}
+  }
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
-  // if num == 0, card is removed
-  // Ace is 14
-  int nums[13]={1,2,3,4,5,6,7,8,9,10,11,12,13};
+  // if num == -1, card is removed
+  // Ace is 12
+  int nums[13]={0,1,2,3,4,5,6,7,8,9,10,11,12};
   
   int i;
   int j;
@@ -64,15 +64,11 @@ int makeDeck(struct card * deck){
 
 void printCard(struct card c) {
   char suit_chars[4] = {'D', 'C', 'H', 'S'};
-  char * num_strs[4] = {"10", "J", "Q", "K"};
-  if ( c.num == 0 ) // do nothing if card does not exist
+  char * num_strs[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+  if ( c.num == -1 ) // do nothing if card does not exist
     return;
-  else if ( c.num == 1 ) // ace
-    printf("%c%c", 'A', suit_chars[c.suit]);
-  else if ( c.num < 10 )
-    printf("%d%c", c.num, suit_chars[c.suit]);
   else 
-    printf("%s%c", num_strs[c.num-10], suit_chars[c.suit]);  
+    printf("%s%c", num_strs[c.num], suit_chars[c.suit]);  
 }
 
 // doesn't necessarily have to be a deck, just an array of cards
@@ -92,10 +88,14 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
   int top_card = top_card_pos(deck);
   
   while ( i < num_players ) {
-    int j = 0;
-    while ( j < num_cards) {
-      players[i].hand[j] = remove_card(deck);
-      j++;
+    if(players[i].money>0){
+      int j = 0;
+      while ( j < num_cards) {
+	struct card * tmp=(struct card *)malloc(sizeof(struct card));
+	players[i].hand[j] = remove_card(deck, *tmp);
+	j++;
+	free(tmp);
+      }
     }
     i++;
   }
@@ -106,9 +106,11 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
 int addCards(struct card * river, int num_cards, struct card * deck, int *len_river){
   int i=0;
   while(i<num_cards){
-    river[*len_river]=remove_card(deck);
+    struct card * tmp=(struct card *)malloc(sizeof(struct card));
+    river[*len_river]=remove_card(deck, *tmp);
     i++;
     (*len_river)++;
+    free(tmp);
   }
   return 0;
 }
@@ -118,7 +120,7 @@ int addCards(struct card * river, int num_cards, struct card * deck, int *len_ri
 int top_card_pos(struct card * deck) {
   int i = 0;
   while ( i < 52 ) {
-    if ( deck[i].num != 0 )
+    if ( deck[i].num != -1 )
       return i;
     i++;
   }
@@ -128,7 +130,7 @@ int top_card_pos(struct card * deck) {
 // removes the first cards from the deck
 // marks the removed spot with num "N"
 // returns the card struct removed
-struct card remove_card(struct card * deck) {
+struct card remove_card(struct card * deck, struct card rtrn) {
   int top_card = top_card_pos(deck);
   
   // copy top card
@@ -137,9 +139,10 @@ struct card remove_card(struct card * deck) {
   tmp_card.suit = (deck[top_card]).suit;
 
   // "remove" top card from deck
-  (deck[top_card]).num = 0;
+  (deck[top_card]).num = -1;
 
-  return tmp_card;
+  rtrn = tmp_card;
+  return rtrn;
 }
 
 // takes an int array of size 4 containing player options
@@ -154,7 +157,7 @@ int get_options(int option_list[], struct player players[], int player_num, int 
 }
 
 int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum){
-  if(amount_to_bet > players[playerNum].money || amount_to_bet <= *highest_bet){
+  if(amount_to_bet > players[playerNum].money || (amount_to_bet + players[playerNum].bet) <= *highest_bet){
     return -1;
   }else{
     players[playerNum].bet+=amount_to_bet;
@@ -254,108 +257,139 @@ int all_ready(struct player * players, int num_players, int highest_bet){
 
 // sends an int array of 4
 int send_possible_moves(struct player * players, int player_num, int high_bet) {
-  int opt_list[4];
-  get_options(opt_list, players, player_num, high_bet);
-  write(players[player_num].socket_connection, opt_list, sizeof(opt_list));
-  return 0;
-}
 
-int send_highest_bet(struct player * players, int player_num, int high_bet) {
-  write(players[player_num].socket_connection, &high_bet, sizeof(int));
-  return 0;
-}
-/*
   struct packet_server_to_client pack;
   pack.type = 2;
   pack.highest_bet = high_bet;
+  pack.player_num = player_num;
   
-  int opt_list[4];
-  get_options(opt_list, players, player_num, high_bet);
-  pack.options = opt_list;
+  //int opt_list[4];
+  get_options(pack.options, players, player_num, high_bet);
+  //pack.options = opt_list;
   
-  write(players[player_num].socket_connection, pack, sizeof(*pack));
+  write(players[player_num].socket_connection, &pack, sizeof(pack));
 
   return 0;
 }
-*/
 
-// returns response number from client
+
+// returns response number from client; modifies high_bet if necessary
 // 0: fold
 // 1: check
 // 2: call
 // 3: bet
-int get_move_response(struct player * players, int player_num) {
-  int response;
-  read(players[player_num].socket_connection, &response, sizeof(int)); 
-  return response;
+int get_move_response(struct player * players, int player_num, int * bet_response) {
+  struct packet_client_to_server pack;
+  read(players[player_num].socket_connection, &pack, sizeof(pack));
+  *bet_response = pack.bet_amount; // bet checking is done client side
+  return pack.option_choice;
 }
 
-// returns money value of what client wants to bet
-// checking is done client side
-int get_response_bet(struct player * players, int player_num) {
-  int response;
-  read(players[player_num].socket_connection, &response, sizeof(int));
-  return response;
+// sends to all clients info about the game
+int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len) {
+  int i;
+  for ( i = 0; i < num_players; i++ ) {
+    struct packet_server_to_client pack;
+    pack.type = 0;
+    pack.highest_bet = high_bet;
+
+    // populate pack.stream w/ contents of river
+    int j;
+    for ( j = 0; j < river_len; j++ )
+      pack.stream[j] = river[j];
+    //pack.stream = river;
+    pack.stream_length = river_len;
+    
+    // populate player list
+    for ( j = 0; j < num_players; j++ )
+      pack.player_list[j] = players[j];
+    
+    pack.player_length = num_players;
+    pack.player_num = i;
+
+    write(players[i].socket_connection, &pack, sizeof(pack));
+  }
+
+  return 0;
 }
 
-int print_player_info(struct card * river, struct player * players, int player_num, int num_players){
+
+int print_game_info(struct card * river, int river_len, struct player * players, int player_num, int num_players){
   int i;
   for(i=0;i<num_players;i++){
-    printf("Player %d: status: %d \n bet: %d \n money: %d \n", i, players[i].status, players[i].bet, players[i].money);
+    char status_msg[50];
+    if ( players[i].status == -1 )
+      strcpy(status_msg, "folded");
+    else if ( players[i].status == 0 )
+      strcpy(status_msg, "checked");
+    else if ( players[i].status == 1 )
+      strcpy(status_msg, "still betting");
+    else
+      strcpy(status_msg, "status was not updated");
+    
+    printf("Player %d: status: %s \n bet: %d \n money: %d \n", i, status_msg, players[i].bet, players[i].money);
     if(i==player_num){
       printf("Your hand: ");
       printDeck(players[i].hand,2);
       printf("\n");
     }
   }
-  printDeck(river, 5);
+  printDeck(river, river_len);
+  return 0;
 }
- 
-int betting(struct player * players, int * highest_bet, int numPlayers){
+
+int check_if_broke(struct player * players, int * num_alive, int num_players){
+  int i;
+  *num_alive=0;
+  for(i=0;i<num_players;i++){
+    if(players[i].money==0){
+      *num_alive++;
+    }
+  }
+}
+
+// make sure you call betting with &highest_bet
+int betting(struct player * players, int * highest_bet, int numPlayers, struct card river[], int river_len){ 
+
   int i;
   int done;
   int ready=1; //1 until everyone either folded or at highest_bet, then goes to 0
   while(ready){
     for(i=0;i<numPlayers;i++){
       done=1;
-      if(players[i].status==-1){
+      if(players[i].status==-1||players[i].money<=0){
 	done=0;
       }
       while(done){
+	// send to all players what happened
+	update_client(players, numPlayers, *highest_bet, river, river_len);
 	//send possible moves, pot, highest bet, cards, river
-	send_possible_moves(players, i, *highest_bet);
-	// send highest_bet so client side can check if player bets enough
-	send_highest_bet(players, i, *highest_bet);
-	
+	send_possible_moves(players, i, *highest_bet);	
 	//getresponse
-	int response = get_move_response(players, i);
-	int response_bet = get_response_bet(players, i);
+	int bet_response;
+	int response = get_move_response(players, i, &bet_response);
 	
 	//if(strcmp(response, "check")){
 	if (response == 1) { //check
 	  check(players, i);
 	  done=0;
-	  //send to all players what happened
 	}
 
 	//if(strcmp(response, "call")){
-	if ( response == 2 ) { //call
+	else if ( response == 2 ) { //call
 	  call(players, i, *highest_bet);
 	  done=0;
-	  //send to all players what happened
 	}
 
 	//if(strcmp(response, "bet")){
-	if (response == 3 ) { // bet
-	  bet(response_bet, highest_bet, players, i);
+	else if (response == 3 ) { // bet
+	  bet(bet_response, highest_bet, players, i);
 	  done=0;
-	  //send to all players what happened
 	}
 	//if(strcmp(response, "fold")){
-	if ( response == 0 ) { // fold
+	else if ( response == 0 ) { // fold
 	  fold(players, i);
 	  done=0;
-	  //send to all players what happened
 	}
       }
     }
@@ -374,8 +408,8 @@ betting()
 turn_river()
 betting()
 score()
-
-
+*/
+/*
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
@@ -386,12 +420,6 @@ int main(){
     players[j].status=1;
   }
   int highest_bet=0;
-
-  players[0].bet=0;
-  players[1].bet=0;
-  printf("%d\n",players[0].bet);
-  printf("%d\n",players[1].bet);
-  deal(players);
   
   makeDeck(deck);
   printDeck(deck, 52);
@@ -406,7 +434,8 @@ int main(){
   }
 
   printDeck(deck, 52);
-
+*/
+  /*
   printf("\n\n %d\n",check(players, 0));
   printf("\n %d \n", bet(100,&highest_bet,players,1));
   printf("\n %d \n", bet(1100,&highest_bet,players,2));
@@ -421,6 +450,8 @@ int main(){
     printf("\n\nplayer %d's money %d \n", j, players[j].money);
     printf("\n\nplayer %d's status %d \n", j, players[j].status);
   }
+*/
+  /*
   free(players);
   free(deck);
   return 0;
