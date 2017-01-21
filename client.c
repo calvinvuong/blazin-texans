@@ -25,6 +25,8 @@ int main() {
 
   char read_buffer[500];
   char write_buffer[500];
+
+  // first operation should always be to listen
   while (1) {
     read(connection, &read_buffer, sizeof(read_buffer));
     if ( strcmp(read_buffer, "write") == 0 ) {

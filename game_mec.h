@@ -108,7 +108,7 @@ int round_reset(struct player players[], int player_num);
 // networking send stuff
 int send_possible_moves(struct player *players, int player_num, int high_bet);
 
-int get_move_response(struct player * players, int player_num, int * high_bet);
+int get_move_response(struct player * players, int player_num, int * bet_response);
 
 int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len);
 #endif
