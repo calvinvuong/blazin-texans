@@ -96,7 +96,7 @@ int all_checked(struct player *players, int num_players);
 
 int betting(struct player * players, int * highest_bet, int num_players, struct card river[], int river_len);
 
-int print_player_info(struct card * river, struct player * players, int player_num, int num_players);
+int print_game_info(struct card * river, int river_len, struct player * players, int player_num, int num_players);
 
 int all_ready(struct player * players, int num_players, int highest_bet);
 

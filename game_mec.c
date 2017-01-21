@@ -21,7 +21,7 @@ typedef struct player{
 
 // for this to work struct player player_list[4]; must be statically initialized in server and passed in
 // if this doesn't work, it might have to take in pointers and dereference
-/*int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
+int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
     // empty hand
@@ -40,7 +40,7 @@ typedef struct player{
     player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
   }
   return 0;
-  }*/
+  }
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
@@ -155,7 +155,7 @@ int get_options(int option_list[], struct player players[], int player_num, int 
 }
 
 int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum){
-  if(amount_to_bet > players[playerNum].money || amount_to_bet <= *highest_bet){
+  if(amount_to_bet > players[playerNum].money || (amount_to_bet + players[playerNum].bet) <= *highest_bet){
     return -1;
   }else{
     players[playerNum].bet+=amount_to_bet;
@@ -259,8 +259,9 @@ int send_possible_moves(struct player * players, int player_num, int high_bet) {
   struct packet_server_to_client pack;
   pack.type = 2;
   pack.highest_bet = high_bet;
+  pack.player_num = player_num;
   
-  //  int opt_list[4];
+  //int opt_list[4];
   get_options(pack.options, players, player_num, high_bet);
   //pack.options = opt_list;
   
@@ -277,7 +278,7 @@ int send_possible_moves(struct player * players, int player_num, int high_bet) {
 // 3: bet
 int get_move_response(struct player * players, int player_num, int * bet_response) {
   struct packet_client_to_server pack;
-  read(players[player_num].socket_connection, &pack, sizeof(pack)); 
+  read(players[player_num].socket_connection, &pack, sizeof(pack));
   *bet_response = pack.bet_amount; // bet checking is done client side
   return pack.option_choice;
 }
@@ -311,17 +312,27 @@ int update_client(struct player * players, int num_players, int high_bet, struct
 }
 
 
-int print_player_info(struct card * river, struct player * players, int player_num, int num_players){
+int print_game_info(struct card * river, int river_len, struct player * players, int player_num, int num_players){
   int i;
   for(i=0;i<num_players;i++){
-    printf("Player %d: status: %d \n bet: %d \n money: %d \n", i, players[i].status, players[i].bet, players[i].money);
+    char status_msg[50];
+    if ( players[i].status == -1 )
+      strcpy(status_msg, "folded");
+    else if ( players[i].status == 0 )
+      strcpy(status_msg, "checked");
+    else if ( players[i].status == 1 )
+      strcpy(status_msg, "still betting");
+    else
+      strcpy(status_msg, "status was not updated");
+    
+    printf("Player %d: status: %s \n bet: %d \n money: %d \n", i, status_msg, players[i].bet, players[i].money);
     if(i==player_num){
       printf("Your hand: ");
       printDeck(players[i].hand,2);
       printf("\n");
     }
   }
-  printDeck(river, 5);
+  printDeck(river, river_len);
   return 0;
 }
 
@@ -338,6 +349,8 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
 	done=0;
       }
       while(done){
+	// send to all players what happened
+	update_client(players, numPlayers, *highest_bet, river, river_len);
 	//send possible moves, pot, highest bet, cards, river
 	send_possible_moves(players, i, *highest_bet);	
 	//getresponse
@@ -366,8 +379,6 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
 	  fold(players, i);
 	  done=0;
 	}
-	// send to all players what happened
-	update_client(players, numPlayers, *highest_bet, river, river_len);
       }
     }
   }
@@ -386,7 +397,7 @@ turn_river()
 betting()
 score()
 */
-
+/*
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
   deck=(card *) malloc(sizeof(struct card)*53);
@@ -411,7 +422,7 @@ int main(){
   }
 
   printDeck(deck, 52);
-
+*/
   /*
   printf("\n\n %d\n",check(players, 0));
   printf("\n %d \n", bet(100,&highest_bet,players,1));
@@ -428,9 +439,9 @@ int main(){
     printf("\n\nplayer %d's status %d \n", j, players[j].status);
   }
 */
-
+  /*
   free(players);
   free(deck);
   return 0;
 }
-
+*/
