@@ -1,5 +1,5 @@
 #include "game_mec.h"
-#include "networking.h"
+//#include "networking.h"
 
 /* FOR REFERENCE ONLY
 typedef struct card{
@@ -21,7 +21,7 @@ typedef struct player{
 
 // for this to work struct player player_list[4]; must be statically initialized in server and passed in
 // if this doesn't work, it might have to take in pointers and dereference
-int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
+/*int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
     // empty hand
@@ -40,7 +40,7 @@ int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_
     player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
   }
   return 0;
-}
+  }*/
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
@@ -94,9 +94,10 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
   while ( i < num_players ) {
     int j = 0;
     while ( j < num_cards) {
-      
-      players[i].hand[j] = remove_card(deck, );
+      struct card * tmp=(struct card *)malloc(sizeof(struct card));
+      players[i].hand[j] = remove_card(deck, *tmp);
       j++;
+      free(tmp);
     }
     i++;
   }
@@ -107,9 +108,11 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
 int addCards(struct card * river, int num_cards, struct card * deck, int *len_river){
   int i=0;
   while(i<num_cards){
-    river[*len_river]=remove_card(deck);
+    struct card * tmp=(struct card *)malloc(sizeof(struct card));
+    river[*len_river]=remove_card(deck, *tmp);
     i++;
     (*len_river)++;
+    free(tmp);
   }
   return 0;
 }
@@ -141,6 +144,7 @@ struct card remove_card(struct card * deck, struct card rtrn) {
   (deck[top_card]).num = 0;
 
   rtrn = tmp_card;
+  return rtrn;
 }
 
 // takes an int array of size 4 containing player options
@@ -252,7 +256,7 @@ int all_ready(struct player * players, int num_players, int highest_bet){
   return 0;
 }
 
-
+/*
 // sends an int array of 4
 int send_possible_moves(struct player * players, int player_num, int high_bet) {
 
@@ -369,7 +373,7 @@ int betting(struct player * players, int * highest_bet, int numPlayers. struct c
   ready=all_ready(players, numPlayers, *highest_bet);
   return 0;
 }
-/*
+
 put int server:
 deal()
 betting()
@@ -380,7 +384,7 @@ betting()
 turn_river()
 betting()
 score()
-
+*/
 
 int main(){
   players=(player *) calloc(4,sizeof(struct player));
@@ -392,13 +396,13 @@ int main(){
     players[j].status=1;
   }
   int highest_bet=0;
-
+  /*
   players[0].bet=0;
   players[1].bet=0;
   printf("%d\n",players[0].bet);
   printf("%d\n",players[1].bet);
   deal(players);
-  
+  */
   makeDeck(deck);
   printDeck(deck, 52);
   printf("\n");
@@ -412,7 +416,7 @@ int main(){
   }
 
   printDeck(deck, 52);
-
+  /*
   printf("\n\n %d\n",check(players, 0));
   printf("\n %d \n", bet(100,&highest_bet,players,1));
   printf("\n %d \n", bet(1100,&highest_bet,players,2));
@@ -427,8 +431,8 @@ int main(){
     printf("\n\nplayer %d's money %d \n", j, players[j].money);
     printf("\n\nplayer %d's status %d \n", j, players[j].status);
   }
+  */
   free(players);
   free(deck);
   return 0;
 }
-*/

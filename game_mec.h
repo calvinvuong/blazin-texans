@@ -70,7 +70,7 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
 
 int top_card_pos(struct card *deck);
 
-struct card remove_card(struct card *deck);
+struct card remove_card(struct card *deck, struct card rtrn);
 
 int get_options(int option_list[], struct player players[], int player_num, int highest_bet);
 
@@ -110,6 +110,6 @@ int send_possible_moves(struct player *players, int player_num, int high_bet);
 
 int get_move_response(struct player * players, int player_num, int * high_bet);
 
-int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len) {
+int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len);
 #endif
 
