@@ -1,5 +1,5 @@
-#include "game_mec.h"
-#include "networking.h"
+#include "game_mec.c"
+#include "networking.c"
 #include "server.h"
 
 /*STANDARDS:
@@ -179,15 +179,15 @@ int main() {
 	    int len_river=0;
 	    int highest_bet=0;
 	    makeDeck(deck);
-	    shuffle(deck);
+	    //shuffle(deck);
 	    deal(players, num_players, deck, 2);
-	    betting(players, *highest_bet, num_players, river, len_river);
-	    addCards(river, 3, *len_river);
-	    betting(players, *highest_bet, num_players, river, len_river);
-	    addCards(river, 1, *len_river);
-	    betting(players, *highest_bet, num_players, river, len_river);
-	    addCards(river, 1, *len_river);
-	    betting(players, *highest_bet, num_players, river, len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 3, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 1, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
+	    addCards(river, 1, deck, &len_river);
+	    betting(players, &highest_bet, num_players, river, len_river);
 	    //score_players();
 	    //find_max();
 	    //move_money();
