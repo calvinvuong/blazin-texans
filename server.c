@@ -171,6 +171,8 @@ int main() {
 	game_pid = fork();
 	signal(SIGCHLD, SIG_IGN); // circumvents waiting
 	if ( game_pid == 0 ) {  // child process
+	  struct player * players=(struct player *) malloc(sizeof(struct player)*num_players);
+	  makePlayers(players,ip_queue, num_players);
 	  while(num_players>1){
 	    struct card * deck=(struct card *) malloc(sizeof(struct card)*53);
 	    struct card * river=(struct card *) malloc(sizeof(struct card)*5);

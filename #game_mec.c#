@@ -21,7 +21,7 @@ typedef struct player{
 
 // for this to work struct player player_list[4]; must be statically initialized in server and passed in
 // if this doesn't work, it might have to take in pointers and dereference
-/*int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
+int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_players) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
     // empty hand
@@ -40,7 +40,7 @@ typedef struct player{
     player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
   }
   return 0;
-  }*/
+}
 
 int makeDeck(struct card * deck){
   int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
