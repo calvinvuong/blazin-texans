@@ -88,12 +88,14 @@ int deal(struct player * players, int num_players, struct card * deck, int num_c
   int top_card = top_card_pos(deck);
   
   while ( i < num_players ) {
-    int j = 0;
-    while ( j < num_cards) {
-      struct card * tmp=(struct card *)malloc(sizeof(struct card));
-      players[i].hand[j] = remove_card(deck, *tmp);
-      j++;
-      free(tmp);
+    if(players[i].money>0){
+      int j = 0;
+      while ( j < num_cards) {
+	struct card * tmp=(struct card *)malloc(sizeof(struct card));
+	players[i].hand[j] = remove_card(deck, *tmp);
+	j++;
+	free(tmp);
+      }
     }
     i++;
   }
@@ -336,6 +338,16 @@ int print_game_info(struct card * river, int river_len, struct player * players,
   return 0;
 }
 
+int check_if_broke(struct player * players, int * num_alive, int num_players){
+  int i;
+  *num_alive=0;
+  for(i=0;i<num_players;i++){
+    if(players[i].money==0){
+      *num_alive++;
+    }
+  }
+}
+
 // make sure you call betting with &highest_bet
 int betting(struct player * players, int * highest_bet, int numPlayers, struct card river[], int river_len){ 
 
@@ -345,7 +357,7 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
   while(ready){
     for(i=0;i<numPlayers;i++){
       done=1;
-      if(players[i].status==-1){
+      if(players[i].status==-1||players[i].money<=0){
 	done=0;
       }
       while(done){

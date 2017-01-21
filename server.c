@@ -173,6 +173,7 @@ int main() {
 	if ( game_pid == 0 ) {  // child process
 	  struct player * players=(struct player *) malloc(sizeof(struct player)*num_players);
 	  makePlayers(players,ip_queue, num_players);
+	  int num_alive=num_players;
 	  while(num_players>1){
 	    struct card * deck=(struct card *) malloc(sizeof(struct card)*53);
 	    struct card * river=(struct card *) malloc(sizeof(struct card)*5);
@@ -191,7 +192,7 @@ int main() {
 	    //score_players();
 	    //find_max();
 	    //move_money();
-	    //check_if_broke();
+	    check_if_broke(players, &num_alive, num_players);
 	    free(deck);
 	    free(river);
 	  }
