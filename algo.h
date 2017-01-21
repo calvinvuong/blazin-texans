@@ -5,9 +5,9 @@
 #ifndef ALGO_H
 #define ALGO_H
 
-int updateScore(player player, int numplayers);
+int updateScore(player player, int numplayers, card * tablecards);
 
-int updateScores(player * players, int numplayers);
+int updateScores(player * players, int numplayers, card * tablecards);
 
 int winningHand(player * players, int numplayers);
 
@@ -40,5 +40,7 @@ int isTwoPair(card * hand);
 int isTwoPair(card * hand);
 
 int isFull(card * hand);
+
+card * determineHand(card * sevencards);
 
 #endif

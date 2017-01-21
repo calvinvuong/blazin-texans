@@ -5,16 +5,27 @@
 
 //https://github.com/gTopa/PokeHerPokeMe/blob/master/Poker/Hand.pde
 
-int updateScore(player player, int currentscore) {
-  sort(player.hand);
-  int newscore = currentscore + handValue(player.hand);
+int updateScore(player player, int currentscore, card * tablecards) {
+  struct card * sevencards;
+  struct card a;
+  sevencards = malloc(7 * sizeof(a));
+  int k;
+  for (k = 0; k < 2; k++)
+    sevencards[k] = player.hand[k];
+  for (k = 2; k < 7; k++)
+    sevencards[k] = tablecards[k-2];
+  struct card * hand;
+  hand = malloc(5 * sizeof(a));
+  hand = determineHand(sevencards);
+  int newscore = currentscore + handValue(hand);
+  free(sevencards);
   return newscore;
 }
 
-int updateScores(player * players, int numplayers) { //update score of each player
+int updateScores(player * players, int numplayers, card * tablecards) { //update score of each player
   int i;
   for (i = 0; i < numplayers; i++) {
-    players[i].score = updateScore(players[i], players[i].score);
+    players[i].score = updateScore(players[i], players[i].score, tablecards);
   }
   return 0;
 }
@@ -97,33 +108,33 @@ int handValue(card * hand) {
   int score = 0;
   sort(hand);
   if(isStraight(hand)&&isFlush(hand)){
-      score+=80000;
-      score+=findMax(hand);
-    }else if(isStraight(hand)){
-      score+=40000;
-      score+=findMax(hand);
-    }else if(isFlush(hand)){
-      score+=50000;
-      score+=findMax(hand);
-    }else if(isPoker(hand)){
-      score+=70000;
-      score+=findMost(hand);
-    }else if(isFull(hand)){
-      score+=60000;
-      score+=findMost(hand);
-    }else if(isTwoPair(hand)){
-      score+=20000;
-      score+=findMost(hand);
-    }else if(isThree(hand)){
-      score+=30000;
-      score+=findMost(hand);
-    }else if(isPair(hand)){
-      score+=10000;
-      score+=findMost(hand);
-      score+=findMax(hand);
-    }else{
-      score+=findMax(hand);
-    }
+    score+=80000;
+    score+=findMax(hand);
+  }else if(isStraight(hand)){
+    score+=40000;
+    score+=findMax(hand);
+  }else if(isFlush(hand)){
+    score+=50000;
+    score+=findMax(hand);
+  }else if(isPoker(hand)){
+    score+=70000;
+    score+=findMost(hand);
+  }else if(isFull(hand)){
+    score+=60000;
+    score+=findMost(hand);
+  }else if(isTwoPair(hand)){
+    score+=20000;
+    score+=findMost(hand);
+  }else if(isThree(hand)){
+    score+=30000;
+    score+=findMost(hand);
+  }else if(isPair(hand)){
+    score+=10000;
+    score+=findMost(hand);
+    score+=findMax(hand);
+  }else{
+    score+=findMax(hand);
+  }
   return score;
 }
 
@@ -204,9 +215,45 @@ int isFull(card * hand) {
 }
 
 
+card * determineHand(card * sevencards) {
+  //7 choose 2 = 21 combinations
+  int i, j, k;
+  i = 1;
+  j = 0;
+
+  struct card a;
+  struct card* currBestHand;
+  struct card * newHand;
+  currBestHand = malloc(5 * sizeof(a));
+  newHand = malloc(5 * sizeof(a));
+  
+  for (k = 0; k < 7; k++) {
+    if (k != i && k != j)
+      currBestHand[k] = sevencards[k];
+  }
+  sort(currBestHand);
+  for (i = 2; i < 7; i++) {
+    for (j = 0; j < 7; j++) {
+      if (j == i)
+	break;
+      else {
+	for (k = 0; k < 7; k++) {
+	  if (k != i && k != j)
+	    newHand[k] = sevencards[k];
+	}
+	sort(newHand);
+	if (handValue(currBestHand) < handValue(newHand)) {
+	  currBestHand = newHand;
+	}
+      }
+    }
+  }
+  free(newHand);
+  return currBestHand;
+}
+
+
 int main() {
-  struct card c1, c2, c3, c4, c5;
-  struct card hand[5];
   
   
   return 0;
