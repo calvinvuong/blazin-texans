@@ -28,6 +28,8 @@ cVuong -- 01/19/17 11:07 -- altered how we plan on organizing data to send (no l
 
 sYoon -- 01/20/17 10:09 -- added algo.c and algo.h to repo, ready to test
 
+cVuong -- 01/20/17 14:00 -- wrote function calls to send information; wrote client side display
+
 sYoon -- 01/20/17 15:33 -- fixed merge error
 
 sYoon -- 01/20/17 16:12 -- fixed functions so that sizeof() wasn't called on non-null-terminated arrs, started writing main() for testing
@@ -43,3 +45,5 @@ sYoon -- 01/21/17 18:43 -- removed #game_mec.h#
 sYoon -- 01/21/17 23:01 -- tested everything besides shuffle, it works
 
 sYoon -- 01/21/17 23:14 -- tested shuffle, it works
+
+gTopa & cVuong -- 01/22/17 11:00 -- debugging

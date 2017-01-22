@@ -158,7 +158,7 @@ int get_options(int option_list[], struct player players[], int player_num, int 
 }
 
 int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerNum){
-  if(amount_to_bet > players[playerNum].money || (amount_to_bet + players[playerNum].bet) <= *highest_bet){
+  if(amount_to_bet > players[playerNum].money || (amount_to_bet + players[playerNum].bet) < *highest_bet){
     return -1;
   }else{
     players[playerNum].bet+=amount_to_bet;
