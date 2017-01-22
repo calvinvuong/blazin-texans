@@ -30,7 +30,7 @@ int listener( int sd, unsigned int *ip_queue, int *queue_size, int timeout ) {
   }
 
   char buffer[500];
-  int port_buff = 3019;
+  int port_buff = PORT2;
   read( connection, &buffer, sizeof(buffer) );
   if ( strcmp(buffer, "client to listener") == 0 )
     write( connection, &port_buff, sizeof(int) ); // send port to listen on to client
@@ -94,7 +94,7 @@ int game(unsigned int player_IPs[], int num_players){
   int client_connections[num_players];
   int i;
   for ( i = 0; i < num_players; i++ ) {
-    client_connections[i] = client_connectB(player_IPs[i], 3019); 
+    client_connections[i] = client_connectB(player_IPs[i], PORT2); 
   }
   
   // main game loop
@@ -151,7 +151,7 @@ int main() {
   int game_running = 0; // 0 if no game running; 1 if there is
   int game_pid = 90;
   
-  sd = server_setup(1379);
+  sd = server_setup(PORT1);
   
   while (1) {
 

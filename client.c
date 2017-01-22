@@ -4,10 +4,10 @@
 
 // returns socket descriptor that will handle all communications
 int custom_connect() {
-  char *host = "149.89.150.103";
+  char *host = HOST_IP;
   int sd;
 
-  sd = client_connect(host, 1379);
+  sd = client_connect(host, PORT1);
 
   int port; // this is the port to listen on
 

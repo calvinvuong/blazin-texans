@@ -38,7 +38,7 @@ int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_
 
     //networking stuff
     player_list[i].ip_address = player_IPs[i];
-    player_list[i].socket_connection = client_connectB(player_IPs[i], 3019); 
+    player_list[i].socket_connection = client_connectB(player_IPs[i], PORT2); 
   }
   return 0;
   }

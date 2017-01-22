@@ -17,6 +17,10 @@
 
 #define MESSAGE_BUFFER_SIZE 1000
 
+#define HOST_IP "149.89.150.103"
+#define PORT1 1379
+#define PORT2 3019
+
 void error_check( int i, char *s );
 
 int server_setup(int port);
