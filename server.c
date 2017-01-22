@@ -190,7 +190,7 @@ int main() {
 	    betting(players, &highest_bet, num_players, river, len_river);
 	    addCards(river, 1, deck, &len_river);
 	    betting(players, &highest_bet, num_players, river, len_river);
-	    score(players, num_players);
+	    score(players, num_players, river);
 	    check_if_broke(players, &num_alive, num_players);
 	    free(deck);
 	    free(river);

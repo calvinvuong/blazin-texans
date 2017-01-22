@@ -357,7 +357,8 @@ int check_if_broke(struct player * players, int * num_alive, int num_players){
 }
 
 
-int score(struct player * players, int num_players) {
+int score(struct player * players, int num_players, card * table_cards) {
+  updateScores(players, num_players, table_cards);
   int winner = winningHand(players, num_players); // player num of the winner
   int pot = 0;
   int i;
@@ -380,9 +381,14 @@ int score(struct player * players, int num_players) {
     }
   }
 
-  // reset status of players
-  for ( i = 0; i < num_players; i++ )
+  // reset vars of players
+  for ( i = 0; i < num_players; i++ ) {
     players[i].status = 1;
+    players[i].bet = 0;
+    players[i].score = 0;
+    players[i].hand[0].num = -1;
+    players[i].hand[1].num = -1;
+  }
   
   // purge dead players
   for ( i = 0; i < num_players; i++ ) {

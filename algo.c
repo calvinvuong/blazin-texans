@@ -26,7 +26,10 @@ int updateScore(player player, int currentscore, card * tablecards) {
 int updateScores(player * players, int numplayers, card * tablecards) { //update score of each player
   int i;
   for (i = 0; i < numplayers; i++) {
-    players[i].score = updateScore(players[i], players[i].score, tablecards);
+    if ( players[i].money < 0 ) // player already dead
+      players[i].score = -500;
+    else
+      players[i].score = updateScore(players[i], players[i].score, tablecards);
   }
   return 0;
 }

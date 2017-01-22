@@ -116,6 +116,6 @@ int update_client(struct player * players, int num_players, int high_bet, struct
 
 int check_if_broke(struct player * players, int * num_alive, int num_players);
 
-int score(struct player * players, int num_players);
+int score(struct player * players, int num_players, struct card * table_cards);
 #endif
 
