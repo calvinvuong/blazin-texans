@@ -46,6 +46,7 @@ int get_action(int options[], int high_bet) {
   if ( options[3] == 1 )
     strcpy(print_msg, "4. bet\n");
 
+  printf("%s", print_msg);
   fgets(input, sizeof(input), stdin);
   *strchr(input, '\n') = 0; // get rid of newline
   int opt_choice = atoi(input);
