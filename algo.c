@@ -385,6 +385,26 @@ int main() {
   w = winningHand(players, 4);
   
   printf("The winning hand is player %d \n", w);
+  printf("\n");
+
+  struct card deck[52];
+  int suits[4]={0, 1, 2, 3}; // from lowest suit to highest
+  // if num == -1, card is removed
+  // Ace is 12
+  int nums[13]={0,1,2,3,4,5,6,7,8,9,10,11,12};
+  int j;
+  for(i=0;i<4;i++){
+    for(j=0;j<13;j++){
+      struct card tempCard;
+      tempCard.num = nums[j];
+      tempCard.suit = suits[i];
+      deck[i*13+j] = tempCard;
+    }
+  }
+  shuffle(deck);
+  for (k = 0; k < 52; k++) {
+    printf("Card %d: %d of %d\n", k, deck[k].num, deck[k].suit);
+  }
   
   return 0;
 }
