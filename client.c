@@ -55,6 +55,7 @@ int get_action(int options[], int high_bet) {
 }
 
 int get_bet_amount(int high_bet, int player_money, int amt_betted) {
+  printf("How much do you want to bet? ");
   // get amount to bet
   char input_bet[10];
   int bet_amount;
@@ -62,6 +63,7 @@ int get_bet_amount(int high_bet, int player_money, int amt_betted) {
   *strchr(input_bet, '\n') = 0;
   bet_amount = atoi(input_bet);
   while ( (bet_amount > player_money) || ((bet_amount + amt_betted) < high_bet) ) { // bet not valid
+    printf("Invalid response. Bet again: ");
     fgets(input_bet, sizeof(input_bet), stdin);
     *strchr(input_bet, '\n') = 0;
     bet_amount = atoi(input_bet);
@@ -94,11 +96,12 @@ int main() {
       exit(0);
     }
     else if ( read_pack.type == 100 ) {
-      printf("Yay! You won!\n");
+      printf("Yay! You won the game!\n");
       exit(0);
     }
     else if ( read_pack.type == 3 ) {
       printf("Player: %d won the hand!\n", read_pack.winner_id);
+      sleep(3);
     }
     else if ( read_pack.type == 0 ) {
       system("clear"); // clear screen
@@ -111,7 +114,6 @@ int main() {
     //OBSOLETE: else if ( read_pack.type == 1 )
     // if a response is needed
     else if ( read_pack.type == 2 ) {
-      printf("type==2\n\n");
       int action = get_action(read_pack.options, high_bet);
       int bet_amt; // only will be sent if action == 3 bet
       if ( action == 3 )

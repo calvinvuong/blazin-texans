@@ -197,9 +197,9 @@ int call(struct player * players, int playerNum, int highest_bet){
 // use this function in determining which options the player can choose from
 int can_check(struct player *players, int playerNum, int highest_bet) {
   if ( (players[playerNum].bet == highest_bet) || (players[playerNum].money == 0) )
-    return 0;
+    return 1;
   
-  return -1;
+  return 0;
 }
 
 // returns 1 if the player playerNum can call
@@ -335,13 +335,16 @@ int print_game_info(struct card * river, int river_len, struct player * players,
       strcpy(status_msg, "status was not updated");
     
     printf("Player %d: status: %s \n bet: %d \n money: %d \n", i, status_msg, players[i].bet, players[i].money);
-    if(i==player_num){
-      printf("Your hand: ");
-      printDeck(players[i].hand,2);
-      printf("\n");
-    }
+    
   }
+  printf("Your player number: %d\n", player_num);
+  printf("Your hand: ");
+  printDeck(players[player_num].hand,2);
+  printf("\n");
+
+  printf("Cards on Table: ");
   printDeck(river, river_len);
+  printf("\n");
   return 0;
 }
 
