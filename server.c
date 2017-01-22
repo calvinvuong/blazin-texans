@@ -197,7 +197,16 @@ int main() {
 	    free(river);
 	  }
 	  //game(player_IPs, num_players); // start game
-	  printf("hi\n");
+	  printf("Complete!\n");
+	  // send to the remaining (winning) player that game is over
+	  int k;
+	  for ( k = 0; k < num_players; k++ ) {
+	    if ( players[k].money >= 0 ) {
+	      struct packet_server_to_client pack;
+	      pack.type = 100;
+	      write(players[k].socket_connection, &pack, sizeof(pack));
+	    }
+	  }
 	  exit(0);
 	}
       }

@@ -90,7 +90,11 @@ int main() {
     if ( read_pack.type == -1 ) {
       printf("You have no more money! Bye bye!\n");
       exit(0);
-    } 
+    }
+    else if ( read_pack.type == 100 ) {
+      printf("Yay! You won!\n");
+      exit(0);
+    }
     else if ( read_pack.type == 0 ) {
       system("clear"); // clear screen
       high_bet = read_pack.highest_bet;
