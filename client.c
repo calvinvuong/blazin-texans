@@ -1,5 +1,6 @@
 #include "game_mec.h"
 #include "networking.h"
+#include "algo.h"
 
 // returns socket descriptor that will handle all communications
 int custom_connect() {

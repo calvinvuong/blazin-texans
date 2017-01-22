@@ -276,7 +276,7 @@ card * determineHand(card * sevencards) {
   return currBestHand;
 }
 
-
+/*
 int main() {
   
   struct card tablecards[5];
@@ -408,3 +408,4 @@ int main() {
   
   return 0;
 }
+*/

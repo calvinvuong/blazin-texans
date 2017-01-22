@@ -1,6 +1,7 @@
 #include "game_mec.h"
 #include "networking.h"
 #include "server.h"
+#include "algo.h"
 
 /*STANDARDS:
 use port 1379 for the initial connection to the listener

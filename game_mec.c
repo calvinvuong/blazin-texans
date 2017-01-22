@@ -1,5 +1,6 @@
 #include "game_mec.h"
 #include "networking.h"
+#include "algo.h"
 
 /* FOR REFERENCE ONLY
 typedef struct card{
