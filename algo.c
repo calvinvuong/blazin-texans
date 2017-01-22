@@ -199,7 +199,8 @@ int isPair(card * hand) {
 int isTwoPair(card * hand) {
   int onePair = 0;
   int pairNum = 0;
-  for (int i = 1; i < 5; i++) {
+  int i;
+  for (i = 1; i < 5; i++) {
     if (hand[i-1].num == hand[i].num) {
       if (onePair && hand[i].num != pairNum)
 	return 1;
