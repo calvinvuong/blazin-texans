@@ -402,20 +402,23 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
   while(ready){
     for(i=0;i<numPlayers;i++){
       done=1;
-      if ( players[i].money < 0 ) // already dead;
+      if ( players[i].money < 0 ){ // already dead;
 	done = 0;
-      else if(players[i].status==-1 || players[i].money == 0){ // folded or went all in
+	printf("money<0\n\n");
+      }else if(players[i].status==-1 || players[i].money == 0){ // folded or went all in
 	// send to all players what happened
 	update_client(players, numPlayers, *highest_bet, river, river_len);
 	done=0;
+	printf("status==-1 or money==0\n\n");
       }
       while(done){ // can still bet
 	// send to all players what happened
 	update_client(players, numPlayers, *highest_bet, river, river_len);
-	
+	printf("updated client\n\n")
 	//send possible moves, pot, highest bet, cards, river
 	send_possible_moves(players, i, *highest_bet);	
 	//getresponse
+	printf("sent moves\n\n");
 	int bet_response;
 	int response = get_move_response(players, i, &bet_response);
 	
