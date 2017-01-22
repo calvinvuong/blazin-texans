@@ -1,5 +1,7 @@
 Blazin' Texans (Gio and some others)
 
+sYoon -- 01/05/17 9:31 -- added design doc
+
 gioT -- 01/09/17 7:56 -- created game_mec.h, started work on creating the deck, created group of players
 
 cVuong -- 01/09/17 -- started writing structs designed to be sent over sockets
@@ -23,3 +25,21 @@ cVuong -- 01/17/17 7:54 -- wrote and tested part 2 of networking aspect (i.e. ga
 cVuong -- 01/18/17 11:30 -- wrote structs to organize sent data; wrote makefile; updated structs to new format
 
 cVuong -- 01/19/17 11:07 -- altered how we plan on organizing data to send (no longer sending structs over sockets); changed which int to represent ace; debugged; updated headers
+
+sYoon -- 01/20/17 10:09 -- added algo.c and algo.h to repo, ready to test
+
+sYoon -- 01/20/17 15:33 -- fixed merge error
+
+sYoon -- 01/20/17 16:12 -- fixed functions so that sizeof() wasn't called on non-null-terminated arrs, started writing main() for testing
+
+sYoon -- 01/20/17 16:35 -- fixed bug in updateScores() so it calls updateScore() with the right params
+
+sYoon -- 01/21/17 18:19 -- wrote determineHand(), updated other functions accordingly
+
+sYoon -- 01/21/17 18:22 -- fixed merge error
+
+sYoon -- 01/21/17 18:43 -- removed #game_mec.h#
+
+sYoon -- 01/21/17 23:01 -- tested everything besides shuffle, it works
+
+sYoon -- 01/21/17 23:14 -- tested shuffle, it works
