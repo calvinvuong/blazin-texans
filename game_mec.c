@@ -414,7 +414,7 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
       while(done){ // can still bet
 	// send to all players what happened
 	update_client(players, numPlayers, *highest_bet, river, river_len);
-	printf("updated client\n\n")
+	printf("updated client\n\n");
 	//send possible moves, pot, highest bet, cards, river
 	send_possible_moves(players, i, *highest_bet);	
 	//getresponse
