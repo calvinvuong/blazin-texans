@@ -116,6 +116,7 @@ int main() {
     else if ( read_pack.type == 2 ) {
       int action = get_action(read_pack.options, high_bet);
       int bet_amt; // only will be sent if action == 3 bet
+      //amount_betted = read_pack.player_list[player_id].bet;
       if ( action == 3 )
 	bet_amt = get_bet_amount(high_bet, player_money, amount_betted);
       

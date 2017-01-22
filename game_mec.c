@@ -161,9 +161,10 @@ int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerN
   if(amount_to_bet > players[playerNum].money || (amount_to_bet + players[playerNum].bet) < *highest_bet){
     return -1;
   }else{
+    //(*highest_bet) = (*highest_bet) + (amount_to_bet - players[playerNum].bet);
+    (*highest_bet) = amount_to_bet + players[playerNum].bet;
     players[playerNum].bet+=amount_to_bet;
     players[playerNum].money-=amount_to_bet;
-    (*highest_bet) = (*highest_bet) + amount_to_bet;
     return 0;
   }
 }
@@ -415,6 +416,7 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
   while(ready){
     for(i=0;i<numPlayers;i++){
       done=1;
+      printf("highest_bet: %d\n", *highest_bet);
       if ( players[i].money < 0 ){ // already dead;
 	done = 0;
 	printf("money<0\n\n");
