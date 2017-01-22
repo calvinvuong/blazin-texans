@@ -379,6 +379,10 @@ int score(struct player * players, int num_players) {
       write(players[i].socket_connection, &pack, sizeof(pack));
     }
   }
+
+  // reset status of players
+  for ( i = 0; i < num_players; i++ )
+    players[i].status = 1;
   
   // purge dead players
   for ( i = 0; i < num_players; i++ ) {

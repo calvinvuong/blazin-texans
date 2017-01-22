@@ -37,7 +37,7 @@ int winningHand(player * players, int numplayers){ //return a player_num
   int champ = 0;
   int i;
   for (i = 0; i < numplayers; i++){
-    if (players[i].score > players[champ].score)
+    if ( (players[i].status != -1) && (players[i].score > players[champ].score) )
       champ = i;
   }
   return champ;
