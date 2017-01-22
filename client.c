@@ -110,6 +110,7 @@ int main() {
     //OBSOLETE: else if ( read_pack.type == 1 )
     // if a response is needed
     else if ( read_pack.type == 2 ) {
+      printf("type==2\n\n");
       int action = get_action(read_pack.options, high_bet);
       int bet_amt; // only will be sent if action == 3 bet
       if ( action == 3 )
