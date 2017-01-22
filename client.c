@@ -59,7 +59,7 @@ int get_bet_amount(int high_bet, int player_money, int amt_betted) {
   fgets(input_bet, sizeof(input_bet), stdin);
   *strchr(input_bet, '\n') = 0;
   bet_amount = atoi(input_bet);
-  while ( (bet_amount < player_money) || ((bet_amount + amt_betted) < high_bet) ) { // bet not valid
+  while ( (bet_amount > player_money) || ((bet_amount + amt_betted) < high_bet) ) { // bet not valid
     fgets(input_bet, sizeof(input_bet), stdin);
     *strchr(input_bet, '\n') = 0;
     bet_amount = atoi(input_bet);
@@ -87,8 +87,11 @@ int main() {
   while (1) {
     read(connection, &read_pack, sizeof(read_pack));
     player_id = read_pack.player_num;
-
-    if ( read_pack.type == 0 ) {
+    if ( read_pack.type == -1 ) {
+      printf("You have no more money! Bye bye!\n");
+      exit(0);
+    } 
+    else if ( read_pack.type == 0 ) {
       system("clear"); // clear screen
       high_bet = read_pack.highest_bet;
       player_money = read_pack.player_list[player_id].money;

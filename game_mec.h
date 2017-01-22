@@ -27,7 +27,7 @@ typedef struct player{
 // will contain info sent from server to client
 // whether it asks for something or is just an update
 typedef struct packet_server_to_client {
-  int type; // 0 if just for updating info; 1 for dealing cards; 2 if need a response back
+  int type; // 0 if just for updating info; 1 for dealing cards; 2 if need a response back; -1 player is dead
   int highest_bet;
 
   // stuff for updating
@@ -112,6 +112,8 @@ int get_move_response(struct player * players, int player_num, int * bet_respons
 
 int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len);
 
-int check_if_broke(struct player * players, int * num_alive);
+int check_if_broke(struct player * players, int * num_alive, int num_players);
+
+int score(struct player * players, int num_players);
 #endif
 

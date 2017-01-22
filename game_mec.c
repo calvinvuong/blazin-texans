@@ -25,8 +25,8 @@ int makePlayers(struct player player_list[], unsigned int player_IPs[], int num_
   int i;
   for ( i = 0; i < num_players; i++ ) {
     // empty hand
-    player_list[i].hand[0].num = 0;
-    player_list[i].hand[1].num = 0;
+    player_list[i].hand[0].num = -1;
+    player_list[i].hand[1].num = -1;
 
     // player info
     player_list[i].player_num = i;
@@ -162,7 +162,7 @@ int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerN
   }else{
     players[playerNum].bet+=amount_to_bet;
     players[playerNum].money-=amount_to_bet;
-    *highest_bet += amount_to_bet;
+    (*highest_bet) = (*highest_bet) + amount_to_bet;
     return 0;
   }
 }
@@ -213,6 +213,7 @@ int can_call(struct player *players, int playerNum, int highest_bet) {
     return 0;
 }
 
+
 // returns 1 if the player playerNum can bet more money than the highest bet
 // 0 otherwise
 int can_bet(struct player *players, int playerNum, int highest_bet) {
@@ -222,6 +223,7 @@ int can_bet(struct player *players, int playerNum, int highest_bet) {
     return 0;
 }
 
+/*
 // returns 0 if all players have folded
 // -1 otherwise
 int all_folded(struct player *players, int num_players) {
@@ -243,11 +245,11 @@ int all_checked(struct player *players, int num_players) {
   }
   return 0;
 }
-
+*/
 int all_ready(struct player * players, int num_players, int highest_bet){
   int i;
   for(i=0;i<num_players;i++){
-    if((players[i].status==0&&players[i].bet-highest_bet)||(players[i].status==1&&players[i].bet-highest_bet)){
+    if( (players[i].money > 0) && ( (players[i].status==0&&players[i].bet-highest_bet)||(players[i].status==1&&players[i].bet-highest_bet) ) ){
       return 1;
     }
   }
@@ -289,25 +291,27 @@ int get_move_response(struct player * players, int player_num, int * bet_respons
 int update_client(struct player * players, int num_players, int high_bet, struct card river[], int river_len) {
   int i;
   for ( i = 0; i < num_players; i++ ) {
-    struct packet_server_to_client pack;
-    pack.type = 0;
-    pack.highest_bet = high_bet;
-
-    // populate pack.stream w/ contents of river
-    int j;
-    for ( j = 0; j < river_len; j++ )
-      pack.stream[j] = river[j];
-    //pack.stream = river;
-    pack.stream_length = river_len;
-    
-    // populate player list
-    for ( j = 0; j < num_players; j++ )
-      pack.player_list[j] = players[j];
-    
-    pack.player_length = num_players;
-    pack.player_num = i;
-
-    write(players[i].socket_connection, &pack, sizeof(pack));
+    if ( ! (players[i].money < 0) ) { // if player is not dead
+      struct packet_server_to_client pack;
+      pack.type = 0;
+      pack.highest_bet = high_bet;
+      
+      // populate pack.stream w/ contents of river
+      int j;
+      for ( j = 0; j < river_len; j++ )
+	pack.stream[j] = river[j];
+      //pack.stream = river;
+      pack.stream_length = river_len;
+      
+      // populate player list
+      for ( j = 0; j < num_players; j++ )
+	pack.player_list[j] = players[j];
+      
+      pack.player_length = num_players;
+      pack.player_num = i;
+      
+      write(players[i].socket_connection, &pack, sizeof(pack));
+    }
   }
 
   return 0;
@@ -318,7 +322,9 @@ int print_game_info(struct card * river, int river_len, struct player * players,
   int i;
   for(i=0;i<num_players;i++){
     char status_msg[50];
-    if ( players[i].status == -1 )
+    if ( players[i].money < 0 )
+      strcpy(status_msg, "dead");
+    else if ( players[i].status == -1 )
       strcpy(status_msg, "folded");
     else if ( players[i].status == 0 )
       strcpy(status_msg, "checked");
@@ -342,12 +348,40 @@ int check_if_broke(struct player * players, int * num_alive, int num_players){
   int i;
   *num_alive=0;
   for(i=0;i<num_players;i++){
-    if(players[i].money==0){
-      *num_alive++;
+    if(players[i].money >= 0){
+      (*num_alive)++;
     }
   }
+  return 0;
 }
 
+/*
+int score(struct player * players, int num_players) {
+  int winner = winningHand(players, num_players); // player num of the winner
+  int pot = 0;
+  int i;
+  // determine pot and reset bet to 0
+  for ( i = 0; i < num_players; i++ ) {
+    if ( (players[i].money >= 0) && (players[i].bet >= 0) )
+      pot += players[i].bet;
+    players[i].bet = 0;
+  }
+
+  // give rewards to winner
+  players[winner].money += pot;
+
+  // purge dead players
+  for ( i = 0; i < num_players; i++ ) {
+    if ( players[i].money == 0 ) { // player died this hand
+      players[i].money = -500; // this makes it so i don't have to tell him he's dead again
+      struct packet_server_to_client pack;
+      pack.type = -1;
+      write(players[i].socket_connection, &pack, sizeof(pack));
+    }
+  }
+  return 0;
+}
+*/
 // make sure you call betting with &highest_bet
 int betting(struct player * players, int * highest_bet, int numPlayers, struct card river[], int river_len){ 
 
@@ -357,12 +391,17 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
   while(ready){
     for(i=0;i<numPlayers;i++){
       done=1;
-      if(players[i].status==-1||players[i].money<=0){
-	done=0;
-      }
-      while(done){
+      if ( players[i].money < 0 ) // already dead;
+	done = 0;
+      else if(players[i].status==-1 || players[i].money == 0){ // folded or went all in
 	// send to all players what happened
 	update_client(players, numPlayers, *highest_bet, river, river_len);
+	done=0;
+      }
+      while(done){ // can still bet
+	// send to all players what happened
+	update_client(players, numPlayers, *highest_bet, river, river_len);
+	
 	//send possible moves, pot, highest bet, cards, river
 	send_possible_moves(players, i, *highest_bet);	
 	//getresponse
@@ -393,8 +432,8 @@ int betting(struct player * players, int * highest_bet, int numPlayers, struct c
 	}
       }
     }
+    ready=all_ready(players, numPlayers, *highest_bet);
   }
-  ready=all_ready(players, numPlayers, *highest_bet);
   return 0;
 }
 /*
@@ -407,7 +446,7 @@ turn_river()
 betting()
 turn_river()
 betting()
-score()
+score() // lost players will exit;
 */
 /*
 int main(){
