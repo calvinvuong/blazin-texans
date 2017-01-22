@@ -168,9 +168,9 @@ int bet(int amount_to_bet, int *highest_bet, struct player *players, int playerN
 }
 
 int check(struct player *players, int playerNum){
-  if(playerNum-1<0 && players[playerNum-1].status==1){
-    return -1;
-  }
+  //if(playerNum-1<0 && players[playerNum-1].status==1){
+  //  return -1;
+  //}
   players[playerNum].status=0;
   return 0;
 }
