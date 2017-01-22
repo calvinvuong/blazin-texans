@@ -42,9 +42,9 @@ int get_action(int options[], int high_bet) {
   if ( options[1] == 1 )
     strcat(print_msg, "2. check\n");
   if ( options[2] == 1 )
-    strcpy(print_msg, "3. call\n");
+    strcat(print_msg, "3. call\n");
   if ( options[3] == 1 )
-    strcpy(print_msg, "4. bet\n");
+    strcat(print_msg, "4. bet\n");
 
   printf("%s", print_msg);
   fgets(input, sizeof(input), stdin);
