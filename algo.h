@@ -11,7 +11,7 @@ int updateScores(player * players, int numplayers, card * tablecards);
 
 int winningHand(player * players, int numplayers);
 
-int swap(card * a, card * b);
+int swap(card * deck, int a, int b);
 
 int shuffle(card * deck);
 

@@ -8,17 +8,18 @@
 int updateScore(player player, int currentscore, card * tablecards) {
   struct card * sevencards;
   struct card a;
-  sevencards = malloc(7 * sizeof(a));
+  sevencards = calloc(7,sizeof(a));
   int k;
   for (k = 0; k < 2; k++)
     sevencards[k] = player.hand[k];
   for (k = 2; k < 7; k++)
     sevencards[k] = tablecards[k-2];
   struct card * hand;
-  hand = malloc(5 * sizeof(a));
+  hand = calloc(5, sizeof(a));
   hand = determineHand(sevencards);
   int newscore = currentscore + handValue(hand);
   free(sevencards);
+  free(hand);
   return newscore;
 }
 
@@ -43,11 +44,11 @@ int winningHand(player * players, int numplayers){ //return a player_num
 }
   
 
-int swap (card *a, card *b){
+int swap (card * deck, int a, int b){
   struct card temp;
-  temp = *a;
-  *a = *b;
-  *b = temp;
+  temp = deck[a];
+  deck[a] = deck[b];
+  deck[b] = temp;
   return 0;
 }
 
@@ -56,7 +57,7 @@ int shuffle( card * deck) {
   int i;
   for (i = 51; i>0; i--) {
     int j = rand() % (i+1);
-    swap(&deck[i], &deck[j]);
+    swap(deck, i, j);
   }
   return 0;
 }
@@ -64,7 +65,7 @@ int shuffle( card * deck) {
 int compareTwo (card card1, card card2) { //Java equiv: card1.compareTo(card2)
   if (card1.num * 10 + card1.suit > card2.num * 10 + card2.suit)
     return 1;
-  else if (card1.num * 10 + card1.suit > card2.num * 10 + card2.suit)
+  else if (card1.num * 10 + card1.suit < card2.num * 10 + card2.suit)
     return -1;
   else return 0;
 }
@@ -78,7 +79,7 @@ int sort(card * hand) {
 	imin = y;
       }
     }
-    swap(&hand[x], &hand[imin]);
+    swap(hand, x, imin);
   }
   return 0;
 }
@@ -108,30 +109,40 @@ int handValue(card * hand) {
   int score = 0;
   sort(hand);
   if(isStraight(hand)&&isFlush(hand)){
+    //printf("Straight flush \n");
     score+=80000;
     score+=findMax(hand);
   }else if(isStraight(hand)){
+    //printf("Straight \n");
     score+=40000;
     score+=findMax(hand);
   }else if(isFlush(hand)){
+    //printf("Flush \n");
     score+=50000;
     score+=findMax(hand);
   }else if(isPoker(hand)){
+    //printf("Poker \n");
     score+=70000;
     score+=findMost(hand);
   }else if(isFull(hand)){
+    //printf("Full \n");
     score+=60000;
     score+=findMost(hand);
   }else if(isTwoPair(hand)){
+    //printf("Two Pair \n");
     score+=20000;
     score+=findMost(hand);
   }else if(isThree(hand)){
+    //printf("Three \n");
     score+=30000;
     score+=findMost(hand);
   }else if(isPair(hand)){
+    //printf("Pair \n");
     score+=10000;
     score+=findMost(hand);
+    //printf("most: %d\n", findMost(hand));
     score+=findMax(hand);
+    //printf("max: %d\n", findMax(hand));
   }else{
     score+=findMax(hand);
   }
@@ -216,45 +227,164 @@ int isFull(card * hand) {
 
 
 card * determineHand(card * sevencards) {
-  //7 choose 2 = 21 combinations
-  int i, j, k;
+  int i, j, k, x, hc, hn;
   i = 1;
   j = 0;
-
+  x = 0;
   struct card a;
-  struct card* currBestHand;
+  struct card * currBestHand = calloc(5, sizeof(a));
   struct card * newHand;
-  currBestHand = malloc(5 * sizeof(a));
-  newHand = malloc(5 * sizeof(a));
-  
   for (k = 0; k < 7; k++) {
-    if (k != i && k != j)
-      currBestHand[k] = sevencards[k];
+    if (k != i && k != j) {
+      currBestHand[x] = sevencards[k];
+      x++;
+    }
   }
-  sort(currBestHand);
+  hc = handValue(currBestHand);
+  //printf("hc: %d\n", hc);
+
+
   for (i = 2; i < 7; i++) {
     for (j = 0; j < 7; j++) {
-      if (j == i)
+      if (i == j)
 	break;
       else {
+	//printf("i = %d, j = %d \n", i, j);
+	newHand = calloc(5, sizeof(a));
+	x = 0;
 	for (k = 0; k < 7; k++) {
-	  if (k != i && k != j)
-	    newHand[k] = sevencards[k];
+	  if (k != i && k != j) {
+	    newHand[x] = sevencards[k];
+	    x++;
+	  }
 	}
-	sort(newHand);
-	if (handValue(currBestHand) < handValue(newHand)) {
+	hn = handValue(newHand);
+	//printf("hn: %d\n", hn);
+	if (hn >= hc) {
+	  //printf("switch\n");
 	  currBestHand = newHand;
+	  hc = handValue(currBestHand);
+	  //printf("hc: %d\n", hc);
 	}
+	//free(newHand);
+	//printf("\n");
       }
     }
   }
-  free(newHand);
+  
+  
   return currBestHand;
 }
 
 
 int main() {
   
+  struct card tablecards[5];
+  struct player players[4];
+  int k;
+ 
+  tablecards[0].num = 2;
+  tablecards[0].suit = 1;
+  tablecards[1].num = 11;
+  tablecards[1].suit = 3;
+  tablecards[2].num = 2;
+  tablecards[2].suit = 2;
+  tablecards[3].num = 6;
+  tablecards[3].suit = 3;
+  tablecards[4].num = 5;
+  tablecards[4].suit = 3;
+
+  
+  printf("Comparing Two Cards\n");
+  printf("%d of %d vs %d of %d\n", tablecards[0].num, tablecards[0].suit, tablecards[1].num, tablecards[1].suit);
+  int c;
+  c = compareTwo(tablecards[0], tablecards[1]);
+  printf("%d\n\n", c);
+
+  printf("Tablecards\n");
+  for (k = 0; k < 5; k++)
+    printf("Card %d: %d of %d \n", k, tablecards[k].num, tablecards[k].suit);
+  
+  sort(tablecards);
+  printf("\nTablecards Sorted\n");
+  for (k = 0; k < 5; k++)
+    printf("Card %d: %d of %d \n", k, tablecards[k].num, tablecards[k].suit);
+  
+  swap(tablecards, 0, 1);
+  printf("\nTablecards Swap 0 and 1\n");
+  for (k = 0; k < 5; k++)
+    printf("Card %d: %d of %d \n", k, tablecards[k].num, tablecards[k].suit);
+
+  swap(tablecards, 0, 1);
+  printf("\nTablecards Swap Back\n");
+  for (k = 0; k < 5; k++)
+    printf("Card %d: %d of %d \n", k, tablecards[k].num, tablecards[k].suit);
+  printf("\n");
+  
+  int i;
+  for(i = 0; i < 4; i++){
+    players[i].score = 0;
+    players[i].player_num = i;
+  }
+
+  players[0].hand[0].num = 12;
+  players[0].hand[0].suit = 1;
+  players[0].hand[1].num = 2;
+  players[0].hand[1].suit = 0;
+
+  players[1].hand[0].num = 12;
+  players[1].hand[0].suit = 3;
+  players[1].hand[1].num = 7;
+  players[1].hand[1].suit = 3;
+
+  players[2].hand[0].num = 11;
+  players[2].hand[0].suit = 2;
+  players[2].hand[1].num = 11;
+  players[2].hand[1].suit = 0;
+
+  players[3].hand[0].num = 3;
+  players[3].hand[0].suit = 0;
+  players[3].hand[1].num = 4;
+  players[3].hand[1].suit = 0;
+
+  for (i = 0; i < 4; i++) {
+    struct card * sevencards;
+    struct card a;
+    sevencards = calloc(7, sizeof(a));
+    for (k = 0; k < 2; k++) {
+      sevencards[k] = players[i].hand[k];
+    }
+    for (k = 2; k < 7; k++) {
+      sevencards[k] = tablecards[k-2];
+    }
+    printf("Player %d 7 cards \n", i);
+    for (k = 0; k < 7; k++) { 
+      printf("Card %d: %d of %d\n", k,sevencards[k].num, sevencards[k].suit);
+    }
+    printf("\n");
+    struct card * hand;
+    hand = calloc(5, sizeof(a));
+    hand = determineHand(sevencards);
+    free(sevencards);
+  
+    printf("Player %d hand: \n", i);
+    for (k = 0; k <5; k++)
+      printf("Card %d: %d of %d \n", k, hand[k].num, hand[k].suit);
+    printf("\n");
+    free(hand);
+  }
+  
+  printf("\n");
+  updateScores(players, 4, tablecards);
+  for (i = 0; i < 4; i++)
+    printf("Player %d score: %d\n", i, players[i].score);
+  printf("\n");
+
+  
+  int w;
+  w = winningHand(players, 4);
+  
+  printf("The winning hand is player %d \n", w);
   
   return 0;
 }
