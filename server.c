@@ -181,7 +181,7 @@ int main() {
 	    int len_river=0;
 	    int highest_bet=0;
 	    makeDeck(deck);
-	    //shuffle(deck);
+	    shuffle(deck);
 	    deal(players, num_players, deck, 2);
 	    betting(players, &highest_bet, num_players, river, len_river);
 	    addCards(river, 3, deck, &len_river);
@@ -190,9 +190,7 @@ int main() {
 	    betting(players, &highest_bet, num_players, river, len_river);
 	    addCards(river, 1, deck, &len_river);
 	    betting(players, &highest_bet, num_players, river, len_river);
-	    //score_players();
-	    //find_max();
-	    //move_money();
+	    score(players, num_players);
 	    check_if_broke(players, &num_alive, num_players);
 	    free(deck);
 	    free(river);

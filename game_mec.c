@@ -357,7 +357,6 @@ int check_if_broke(struct player * players, int * num_alive, int num_players){
 }
 
 
-/*
 int score(struct player * players, int num_players) {
   int winner = winningHand(players, num_players); // player num of the winner
   int pot = 0;
@@ -392,7 +391,7 @@ int score(struct player * players, int num_players) {
   }
   return 0;
 }
-*/
+
 
 // make sure you call betting with &highest_bet
 int betting(struct player * players, int * highest_bet, int numPlayers, struct card river[], int river_len){ 
