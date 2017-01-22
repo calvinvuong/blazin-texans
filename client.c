@@ -95,6 +95,9 @@ int main() {
       printf("Yay! You won!\n");
       exit(0);
     }
+    else if ( read_pack.type == 3 ) {
+      printf("Player: %d won the hand!\n", read_pack.winner_id);
+    }
     else if ( read_pack.type == 0 ) {
       system("clear"); // clear screen
       high_bet = read_pack.highest_bet;

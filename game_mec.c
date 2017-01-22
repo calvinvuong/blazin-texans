@@ -355,6 +355,7 @@ int check_if_broke(struct player * players, int * num_alive, int num_players){
   return 0;
 }
 
+
 /*
 int score(struct player * players, int num_players) {
   int winner = winningHand(players, num_players); // player num of the winner
@@ -369,7 +370,16 @@ int score(struct player * players, int num_players) {
 
   // give rewards to winner
   players[winner].money += pot;
-
+  // tell players who won
+  for ( i = 0; i < num_players; i++ ) {
+    if (players[i].money >= 0) { // send to all alive players
+      struct packet_server_to_client pack;
+      pack.type = 3;
+      pack.winner_id = winner;
+      write(players[i].socket_connection, &pack, sizeof(pack));
+    }
+  }
+  
   // purge dead players
   for ( i = 0; i < num_players; i++ ) {
     if ( players[i].money == 0 ) { // player died this hand
@@ -382,6 +392,7 @@ int score(struct player * players, int num_players) {
   return 0;
 }
 */
+
 // make sure you call betting with &highest_bet
 int betting(struct player * players, int * highest_bet, int numPlayers, struct card river[], int river_len){ 
 
