@@ -53,8 +53,6 @@ int transfer_IPs( unsigned int *ip_queue, int *queue_size, unsigned int *player_
   // fill player_IPs with IPs FROM ip_queue
   for ( i = 0; i < num_players; i++ )
     player_IPs[i] = ip_queue[i];
-  printf("Player IPs:\n");
-  print_IP(player_IPs, num_players);
 
   // remove transferred ips from ip_queue
   int j = num_players;
