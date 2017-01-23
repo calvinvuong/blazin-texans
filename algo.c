@@ -30,8 +30,10 @@ int updateScores(player * players, int numplayers, card * tablecards) { //update
       players[i].score = -500;
     else if (players[i].status == -1)
       players[i].score = -500;
-    else
+    else {
       players[i].score = updateScore(players[i], players[i].score, tablecards);
+      printf("player %d score: %d\n", i, players[i].score);
+    }
   }
   return 0;
 }
