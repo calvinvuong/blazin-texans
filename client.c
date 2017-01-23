@@ -3,8 +3,8 @@
 #include "algo.h"
 
 // returns socket descriptor that will handle all communications
-int custom_connect() {
-  char *host = HOST_IP;
+int custom_connect(char *host) {
+  //char *host = HOST_IP;
   int sd;
 
   sd = client_connect(host, PORT1);
@@ -71,8 +71,17 @@ int get_bet_amount(int high_bet, int player_money, int amt_betted) {
   return bet_amount;
 }
 
-int main() {
-  int connection = custom_connect();
+int main( int argc, char *argv[] ) {
+  // input ip address
+  char *host;
+  if (argc != 2 ) {
+    printf("host not specified, conneting to 149.89.150.103\n");
+    host = "149.89.150.103";
+  }
+  else
+    host = argv[1];
+  
+  int connection = custom_connect(host);
   
   char read_buffer[500];
   char write_buffer[500];
