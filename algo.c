@@ -28,6 +28,8 @@ int updateScores(player * players, int numplayers, card * tablecards) { //update
   for (i = 0; i < numplayers; i++) {
     if ( players[i].money < 0 ) // player already dead
       players[i].score = -500;
+    else if (players[i].status == -1)
+      players[i].score = -500;
     else
       players[i].score = updateScore(players[i], players[i].score, tablecards);
   }

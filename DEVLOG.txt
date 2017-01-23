@@ -47,3 +47,5 @@ sYoon -- 01/21/17 23:01 -- tested everything besides shuffle, it works
 sYoon -- 01/21/17 23:14 -- tested shuffle, it works
 
 gTopa & cVuong -- 01/22/17 11:00 -- debugging
+
+sYoon -- 01/22/17 20:39 -- fixed updateScores() so that if the player is folded the score is set to -500
