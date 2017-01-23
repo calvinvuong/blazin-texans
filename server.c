@@ -87,6 +87,7 @@ int make_players(struct player players[], unsigned int player_IPs[], int num_pla
   return 0;
 } */
 
+/*
 // DIAGNOSTIC only
 // runs the game; takes an arrat of length 4 storing ip addresses
 int game(unsigned int player_IPs[], int num_players){
@@ -125,7 +126,7 @@ int game(unsigned int player_IPs[], int num_players){
     else
       i++;
   }
-    /*
+    
   printf("Game players:\n");
   //  while (1) {
   int k = 0;
@@ -138,10 +139,10 @@ int game(unsigned int player_IPs[], int num_players){
     sleep(2);
     k++;
   }
-  */
+  
   return 0;
 }
-  
+*/  
 
 int main() {
   
@@ -173,7 +174,7 @@ int main() {
 	signal(SIGCHLD, SIG_IGN); // circumvents waiting
 	if ( game_pid == 0 ) {  // child process
 	  struct player * players=(struct player *) malloc(sizeof(struct player)*num_players);
-	  makePlayers(players,ip_queue, num_players);
+	  makePlayers(players, player_IPs, num_players);
 	  int num_alive = num_players;
 	  while(num_alive>1){
 	    struct card * deck=(struct card *) malloc(sizeof(struct card)*53);
