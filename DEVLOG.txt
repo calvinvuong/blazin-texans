@@ -49,3 +49,5 @@ sYoon -- 01/21/17 23:14 -- tested shuffle, it works
 gTopa & cVuong -- 01/22/17 11:00 -- debugging
 
 sYoon -- 01/22/17 20:39 -- fixed updateScores() so that if the player is folded the score is set to -500
+
+cVuong -- 01/23/17 15:30 -- updated client.c to allow you to specify server IP address that you are using
